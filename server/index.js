@@ -1,11 +1,14 @@
-const express = require('express')
-const cors = require('cors')
-const dotEnv = require('dotenv')
-const connectDB = require('./models/db')
+import express from 'express'
+import cors from 'cors'
+import dotenv from 'dotenv'
+import connectDB from './models/db.js'
 const app = express()
 const port = 5000
+import userRouter from './routes/User.js'
 
-dotEnv.config().parsed
+//example for auth
+//https://github.com/codedamn/full-mern-stack-video/blob/part1/server/index.js
+dotenv.config().parsed
 const corsOptions = {
     origin: true,
     credentials: true,
@@ -16,6 +19,8 @@ connectDB()
 app.use(cors(corsOptions));
 app.use(express.json())
 
+
+app.use('/api/users', userRouter)
 app.get('/', (req, res) => {
     res.send('Hello World!')
 })

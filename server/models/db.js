@@ -1,6 +1,6 @@
-const mongoose = require("mongoose");
-const dotEnv = require('dotenv')
-dotEnv.config().parsed
+import mongoose from 'mongoose';
+import dotenv from 'dotenv'
+dotenv.config().parsed
 /* Replace <password> with your database password */
 
 const db = process.env.MONGO_URI
@@ -16,4 +16,6 @@ const connectDB = async () => {
         process.exit(1);
     }
 };
-module.exports = connectDB;
+
+
+export default connectDB
