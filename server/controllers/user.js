@@ -5,7 +5,7 @@ import bcrypt from 'bcryptjs'
 import User from '../models/user.js'
 export const addUser = async (req, res) => {
     try {
-
+        console.log(req.body)
         const newPassword = await bcrypt.hash(req.body.password, 10)
         await User.create({
             name: req.body.name,

@@ -1,13 +1,85 @@
-import { View, Text, TouchableOpacity, Image, TextInput } from 'react-native';
-import React from 'react';
+import {
+  View,
+  Text,
+  TouchableOpacity,
+  Image,
+  TextInput,
+  Alert,
+} from 'react-native';
+import React, { useState } from 'react';
 // import { themeColors } from '../theme'
 import { SafeAreaView } from 'react-native-safe-area-context';
 import { ArrowLeftIcon } from 'react-native-heroicons/solid';
 import { useNavigation } from '@react-navigation/native';
+import axios from 'axios';
 
 // subscribe for more videos like this :)
-export default function RegisterPage() {
-  const navigation = useNavigation();
+export default function RegisterPage({ navigation }) {
+  // const navigation = useNavigation();
+
+  const [registrationForm, setRegistrationForm] = useState({
+    name: '',
+    email: '',
+    password: '',
+  });
+
+  const handleInputChange = (fieldName, value) => {
+    setRegistrationForm({
+      ...registrationForm,
+      [fieldName]: value,
+    });
+  };
+
+  const handleRegistration = async () => {
+    const checkValidInput = isFormValid();
+    if (checkValidInput === true) {
+      await axios
+        .post('http://192.168.56.1:5000/api/users/register/', registrationForm)
+        .then(() => {
+          Alert.alert('Registration Success!', 'Please Login!', [
+            {
+              text: 'Login',
+              onPress: () => {
+                setRegistrationForm({
+                  name: '',
+                  email: '',
+                  password: '',
+                });
+                navigation.navigate('Login');
+              },
+            },
+          ]);
+        })
+        .catch(() => {
+          Alert.alert('Email exists!', 'Please use another email!');
+        });
+    } else if (checkValidInput === 'invalidPassword') {
+      Alert.alert(
+        'Invalid Password',
+        'Password must be at least 8 characters long and contain letters, numbers, and special characters.'
+      );
+    } else if (checkValidInput === 'invalidName') {
+      Alert.alert('Invalid Name', 'Please enter your name.');
+    } else {
+      Alert.alert('Invalid Email', 'Please enter valid email.');
+    }
+  };
+  const isFormValid = () => {
+    const isValidEmail = registrationForm.email.includes('@');
+    const passwordRegex =
+      /^(?=.*[a-zA-Z])(?=.*\d)(?=.*[@$!%*?&])[A-Za-z\d@$!%*?&]{8,}$/;
+    const isValidPassword = passwordRegex.test(registrationForm.password);
+
+    if (registrationForm.name === '') {
+      return 'invalidName';
+    } else if (!isValidEmail) {
+      return 'invalidEmail';
+    } else if (!isValidPassword) {
+      return 'invalidPassword';
+    } else {
+      return true;
+    }
+  };
   return (
     <View className="flex-1 bg-white" style={{ backgroundColor: '#877dfa' }}>
       <SafeAreaView className="flex flex-1">
@@ -15,23 +87,12 @@ export default function RegisterPage() {
           <TouchableOpacity
             onPress={() => navigation.goBack()}
             style={{
-              // backgroundColor: '#fbd38d',
-              // padding: 8,
-              // borderTopRightRadius: 8,
-              // borderBottomLeftRadius: 8,
-              // marginLeft: 16,
-              // zIndex: 1,
               backgroundColor: '#fbd38d',
               padding: 8,
               borderTopRightRadius: 8,
               borderBottomLeftRadius: 8,
               marginLeft: 16,
               zIndex: 1,
-              // backgroundColor: 'yellow',
-              // padding: 10,
-              // borderTopRightRadius: 50,
-              // borderBottomLeftRadius: 50,
-              // marginLeft: 4,
               position: 'absolute',
               top: 35,
               left: 0,
@@ -66,23 +127,30 @@ export default function RegisterPage() {
           <Text className="text-gray-700 ml-4">Full Name</Text>
           <TextInput
             className="p-2 bg-gray-100 text-gray-700 rounded-2xl"
-            value="john snow"
+            value={registrationForm.name}
             placeholder="Enter Name"
+            onChangeText={(text) => handleInputChange('name', text)}
           />
           <Text className="text-gray-700 ml-4">Email Address</Text>
           <TextInput
             className="p-2 bg-gray-100 text-gray-700 rounded-2xl"
-            value="john@gmail.com"
+            value={registrationForm.email}
             placeholder="Enter Email"
+            onChangeText={(text) => handleInputChange('email', text)}
+            keyboardType="email-address"
           />
           <Text className="text-gray-700 ml-4">Password</Text>
           <TextInput
             className="p-2 bg-gray-100 text-gray-700 rounded-2xl mb-2"
             secureTextEntry
-            value="test12345"
+            value={registrationForm.password}
             placeholder="Enter Password"
+            onChangeText={(text) => handleInputChange('password', text)}
           />
-          <TouchableOpacity className="py-3 bg-yellow-400 rounded-xl">
+          <TouchableOpacity
+            onPress={handleRegistration}
+            className="py-3 bg-yellow-400 rounded-xl"
+          >
             <Text className="font-xl font-bold text-center text-gray-700">
               Sign Up
             </Text>
