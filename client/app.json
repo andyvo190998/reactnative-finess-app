@@ -1,10 +1,16 @@
 {
   "expo": {
+    "ios": {
+      "config": {
+        "usesNonExemptEncryption": false
+      }
+    },
     "scheme": "acme",
     "web": {
       "bundler": "metro"
     },
     "name": "fitness",
-    "slug": "fitness"
+    "slug": "fitness",
+    "plugins": ["expo-secure-store"]
   }
 }

@@ -60,10 +60,6 @@ const TrainingScreen = ({ navigation, route }) => {
 
     return hours + ':' + minutes + ':' + remainingSeconds;
   };
-  console.log(key);
-  useEffect(() => {
-    console.log('render');
-  }, [trainingDuration]);
   return (
     <View style={styles.container}>
       <Video
@@ -96,7 +92,6 @@ const TrainingScreen = ({ navigation, route }) => {
           strokeWidth={20}
           onComplete={() => {
             if (!isTraining) {
-              console.log(route.params.id * 60);
               setTrainingDuration(route.params.id * 60 + 30);
             }
             setIsTraining((previous) => !previous);

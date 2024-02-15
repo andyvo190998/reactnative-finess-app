@@ -4,7 +4,6 @@ import { useNavigation } from 'expo-router';
 import styles from './popularjobs.style';
 
 const Popularjobs = () => {
-  console.log('login page');
   return (
     <View>
       <Text>popularjob</Text>

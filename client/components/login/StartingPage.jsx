@@ -3,6 +3,7 @@ import React from 'react';
 import { Button } from 'react-native-paper';
 import { StyleSheet } from 'react-native';
 import { Dimensions } from 'react-native';
+import { useAuth } from '@/app/context/AuthContext';
 const styles = StyleSheet.create({
   btn: {
     border: '1px solid white',
@@ -24,6 +25,7 @@ const styles = StyleSheet.create({
 });
 
 const StartingPage = ({ navigation }) => {
+  const { authState } = useAuth();
   const btn = {
     border: '1px solid white',
     width: '80vw',
@@ -63,7 +65,13 @@ const StartingPage = ({ navigation }) => {
           textColor="black"
           dark={true}
           buttonColor="rgb(177 177 77)"
-          onPress={() => navigation.navigate('Login', { id: 1 })}
+          onPress={() => {
+            if (authState.authenticated) {
+              navigation.navigate('Home', { id: 1 });
+            } else {
+              navigation.navigate('Login', { id: 1 });
+            }
+          }}
           style={btn}
           className="color-white"
         >

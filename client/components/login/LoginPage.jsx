@@ -98,7 +98,7 @@
 // export default LoginScreen;
 
 // https://github.com/syednomishah/Login-SignUp-UI-React-Native
-import React from 'react';
+import React, { useState } from 'react';
 import {
   View,
   Text,
@@ -111,15 +111,35 @@ import { SafeAreaView } from 'react-native-safe-area-context';
 import { ArrowLeftIcon } from 'react-native-heroicons/solid';
 // import { themeColors } from '../theme';
 import { useNavigation } from '@react-navigation/native';
+import axios from 'axios';
+import { useAuth } from '@/app/context/AuthContext';
 
 const LoginScreen = () => {
+  const { onLogin } = useAuth();
   const navigation = useNavigation();
+  const [loginForm, setLoginForm] = useState({
+    email: '',
+    password: '',
+  });
+  const handleFormChange = (field, value) => {
+    setLoginForm({
+      ...loginForm,
+      [field]: value,
+    });
+  };
+
+  const handleLogin = async () => {
+    await axios
+      .post('http://192.168.56.1:5000/api/users/login', loginForm)
+      .then((res) => console.log(res))
+      .catch((error) => console.error(error));
+  };
   return (
     <View style={{ flex: 1, backgroundColor: '#877dfa' }}>
       <SafeAreaView style={{ flex: 1 }}>
         <View style={styles.safeViewContainer}>
           <TouchableOpacity
-            onPress={() => navigation.goBack()}
+            onPress={() => navigation.navigate('Home')}
             style={styles.backBtn}
           >
             <ArrowLeftIcon size={20} color="black" />
@@ -149,7 +169,8 @@ const LoginScreen = () => {
           <TextInput
             style={styles.inputField}
             placeholder="email"
-            value="andy@gmail.com"
+            value={loginForm.email}
+            onChangeText={(text) => handleFormChange('email', text)}
           />
         </View>
         <View style={{ marginBottom: 2 }}>
@@ -160,7 +181,8 @@ const LoginScreen = () => {
             style={styles.inputField}
             secureTextEntry
             placeholder="password"
-            value="test12345"
+            value={loginForm.password}
+            onChangeText={(text) => handleFormChange('password', text)}
           />
         </View>
         <TouchableOpacity
@@ -171,7 +193,12 @@ const LoginScreen = () => {
           </Text>
         </TouchableOpacity>
         <TouchableOpacity
-          onPress={() => navigation.navigate('Home')}
+          onPress={() => {
+            const isValid = onLogin(loginForm);
+            if (isValid) {
+              navigation.navigate('Home');
+            }
+          }}
           style={styles.loginBtn}
         >
           <Text

@@ -13,8 +13,10 @@ import {
 } from 'react-native-paper';
 import Icon from 'react-native-vector-icons/MaterialCommunityIcons';
 import Icon1 from 'react-native-vector-icons/Ionicons';
+import { useAuth } from '@/app/context/AuthContext';
 
 const DrawerContent = (props) => {
+  const { onLogOut } = useAuth();
   return (
     <View style={{ flex: 1 }}>
       <DrawerContentScrollView {...props}>
@@ -58,7 +60,6 @@ const DrawerContent = (props) => {
               )}
               label="Profile"
               onPress={() => {
-                console.log('click');
                 props.navigation.navigate('Profile');
               }}
             />
@@ -110,6 +111,7 @@ const DrawerContent = (props) => {
           )}
           label="Sign Out"
           onPress={() => {
+            onLogOut();
             props.navigation.navigate('Login');
           }}
         />
