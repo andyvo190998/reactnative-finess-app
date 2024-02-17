@@ -1,104 +1,5 @@
-// import React, { useState } from 'react';
-// import {
-//   View,
-//   Text,
-//   TextInput,
-//   TouchableOpacity,
-//   StyleSheet,
-//   ImageBackground,
-// } from 'react-native';
-
-// const LoginScreen = ({ navigation }) => {
-//   const [username, setUsername] = useState('');
-//   const [password, setPassword] = useState('');
-
-//   const handleLogin = () => {
-//     // Perform login logic here
-//     // For simplicity, let's just navigate to a HomeScreen for now
-//     navigation.navigate('Home');
-//   };
-
-//   return (
-//     <ImageBackground
-//       source={{
-//         uri: 'https://images.pexels.com/photos/4482936/pexels-photo-4482936.jpeg?auto=compress&cs=tinysrgb&w=1260&h=750&dpr=1',
-//       }} // Replace with the actual path to your image
-//       style={styles.backgroundImage}
-//     >
-//       <View style={styles.container}>
-//         <Text style={styles.title}>Login</Text>
-
-//         <TextInput
-//           style={styles.input}
-//           placeholder="Username"
-//           value={username}
-//           onChangeText={setUsername}
-//         />
-
-//         <TextInput
-//           style={styles.input}
-//           placeholder="Password"
-//           secureTextEntry
-//           value={password}
-//           onChangeText={setPassword}
-//         />
-
-//         <TouchableOpacity style={styles.loginButton} onPress={handleLogin}>
-//           <Text style={styles.buttonText}>Login</Text>
-//         </TouchableOpacity>
-//         <Text style={{ marginTop: '20px', fontSize: '17px' }}>
-//           Don't have an account?{' '}
-//           <Text style={{ color: 'blue' }}>Register here</Text>
-//         </Text>
-//       </View>
-//     </ImageBackground>
-//   );
-// };
-
-// const styles = StyleSheet.create({
-//   backgroundImage: {
-//     flex: 1,
-//     resizeMode: 'cover', // or 'stretch'
-//   },
-//   container: {
-//     flex: 1,
-//     justifyContent: 'center',
-//     alignItems: 'center',
-//     padding: 16,
-//   },
-//   title: {
-//     fontSize: 24,
-//     fontWeight: 'bold',
-//     marginBottom: 24,
-//     color: 'white', // Set text color to contrast with the background
-//   },
-//   input: {
-//     height: 40,
-//     width: '100%',
-//     borderColor: 'gray',
-//     borderWidth: 1,
-//     marginBottom: 16,
-//     padding: 8,
-//     backgroundColor: 'rgba(255,255,255,0.7)', // Add a semi-transparent white background to improve readability
-//   },
-//   loginButton: {
-//     backgroundColor: '#0078d0',
-//     padding: 12,
-//     borderRadius: 8,
-//     width: '100%',
-//     alignItems: 'center',
-//   },
-//   buttonText: {
-//     color: 'white',
-//     fontWeight: 'bold',
-//     fontSize: 16,
-//   },
-// });
-
-// export default LoginScreen;
-
 // https://github.com/syednomishah/Login-SignUp-UI-React-Native
-import React, { useState } from 'react';
+import React, { useEffect, useState } from 'react';
 import {
   View,
   Text,
@@ -115,7 +16,7 @@ import axios from 'axios';
 import { useAuth } from '@/app/context/AuthContext';
 
 const LoginScreen = () => {
-  const { onLogin } = useAuth();
+  const { onLogin, authState } = useAuth();
   const navigation = useNavigation();
   const [loginForm, setLoginForm] = useState({
     email: '',
@@ -128,23 +29,23 @@ const LoginScreen = () => {
     });
   };
 
-  const handleLogin = async () => {
-    await axios
-      .post('http://192.168.56.1:5000/api/users/login', loginForm)
-      .then((res) => console.log(res))
-      .catch((error) => console.error(error));
-  };
+  useEffect(() => {
+    if (authState.authenticated) {
+      navigation.navigate('Home');
+    }
+  }, [authState]);
+
   return (
     <View style={{ flex: 1, backgroundColor: '#877dfa' }}>
       <SafeAreaView style={{ flex: 1 }}>
-        <View style={styles.safeViewContainer}>
+        {/* <View style={styles.safeViewContainer}>
           <TouchableOpacity
             onPress={() => navigation.navigate('Home')}
             style={styles.backBtn}
           >
             <ArrowLeftIcon size={20} color="black" />
           </TouchableOpacity>
-        </View>
+        </View> */}
         <View
           style={{
             flexDirection: 'row',
@@ -193,18 +94,12 @@ const LoginScreen = () => {
           </Text>
         </TouchableOpacity>
         <TouchableOpacity
-          onPress={() => {
-            const isValid = onLogin(loginForm);
-            if (isValid) {
-              navigation.navigate('Home');
-            }
+          onPress={async () => {
+            await onLogin(loginForm);
           }}
           style={styles.loginBtn}
         >
-          <Text
-            className="font-xl font-bold text-center text-gray-700"
-            // style={styles.loginText}
-          >
+          <Text className="font-xl font-bold text-center text-gray-700">
             Login
           </Text>
         </TouchableOpacity>
@@ -264,11 +159,6 @@ const styles = StyleSheet.create({
     borderBottomLeftRadius: 8,
     marginLeft: 16,
     zIndex: 1,
-    // backgroundColor: 'yellow',
-    // padding: 10,
-    // borderTopRightRadius: 50,
-    // borderBottomLeftRadius: 50,
-    // marginLeft: 4,
     position: 'absolute',
     top: 35,
     left: 0,

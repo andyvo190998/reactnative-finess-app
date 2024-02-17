@@ -13,22 +13,22 @@ import styles from './welcome.style';
 import { useRouter } from 'expo-router';
 import { SIZES, icons } from '@/constants';
 import Icon from 'react-native-vector-icons/MaterialCommunityIcons';
+import { useAuth } from '@/app/context/AuthContext';
+import { jwtDecode } from 'jwt-decode';
 
 const Drawer = createDrawerNavigator();
 const Welcome = () => {
-  const jobTypes = ['Easy', 'Medium', 'Hard', 'Extreme', 'Expert'];
+  const { authState, userInfo } = useAuth();
+
+  const jobTypes = ['Beginner', 'Advanced', 'Pro'];
   const router = useRouter();
   const [activeJobType, setActiveJobType] = useState('Cardio');
 
   const selectIcon = (icon) => {
-    if (icon === 'Easy') {
+    if (icon === 'Beginner') {
       return 'emoticon-excited-outline';
-    } else if (icon === 'Medium') {
+    } else if (icon === 'Advanced') {
       return 'emoticon-wink-outline';
-    } else if (icon === 'Hard') {
-      return 'emoticon-cool-outline';
-    } else if (icon === 'Extreme') {
-      return 'emoticon-angry-outline';
     } else {
       return 'emoticon-devil-outline';
     }
@@ -36,7 +36,7 @@ const Welcome = () => {
   return (
     <View>
       <View style={styles.container}>
-        <Text style={styles.userName}>Hello Andy</Text>
+        <Text style={styles.userName}>Hello {userInfo.userName}</Text>
         <Text style={styles.welcomeMessage}>Find your perfect course</Text>
       </View>
       <View style={styles.searchContainer}>

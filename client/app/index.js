@@ -1,8 +1,6 @@
-import { Stack, useNavigation, useRouter } from 'expo-router';
-import { SafeAreaView, ScrollView, StyleSheet, Text, View } from 'react-native';
+import { Stack } from 'expo-router';
+import { SafeAreaView, ScrollView, View } from 'react-native';
 import { LogBox } from 'react-native';
-import { jwtDecode } from 'jwt-decode';
-import Cookies from 'js-cookie';
 
 import { COLORS, icons, images, SIZES } from '../constants';
 import {
@@ -18,13 +16,10 @@ import {
 } from '../components';
 import { DrawerActions, NavigationContainer } from '@react-navigation/native';
 import { createDrawerNavigator } from '@react-navigation/drawer';
-import { useEffect, useState } from 'react';
-import { AuthProvider, useAuth } from './context/AuthContext';
 LogBox.ignoreLogs(['new NativeEventEmitter']);
 LogBox.ignoreLogs(["VirtualizedLists should never be nested"])
 
-const StackNav = ({ navigation, route }) => {
-  // const navigation = useNavigation()
+const StackNav = ({ navigation }) => {
   const handlePress = () => {
     navigation.dispatch(DrawerActions.openDrawer())
   }
@@ -61,16 +56,8 @@ const StackNav = ({ navigation, route }) => {
 }
 
 export default function Home() {
-  const router = useRouter();
   const Drawer = createDrawerNavigator();
-  const [trainingLevel, setTrainingLevel] = useState('')
-  useEffect(() => {
-    const token = Cookies.get('access_token');
-    console.log('token', token);
-  }, [])
 
-  const { authState } = useAuth();
-  console.log('auth at main', authState);
   return (
     // <StackNav />
     <NavigationContainer independent={true}>
@@ -80,12 +67,19 @@ export default function Home() {
         screenOptions={{
           headerShown: false
         }}>
+        {/* {authState.authenticated ? (
+          <> */}
         <Drawer.Screen name="Home" component={StackNav} initialParams={{ itemId: 42 }} />
-        <Drawer.Screen name="StartingPage" component={StartingPage} />
+        {/* </>
+        ) : (
+          <> */}
         <Drawer.Screen name="Login" component={LoginScreen} />
         <Drawer.Screen name="Register" component={RegisterPage} />
-        <Drawer.Screen name="Profile" component={Profile} options={{ headerShown: true }} />
+        <Drawer.Screen name="Profile" component={Profile} options={{ headerShown: false }} />
         <Drawer.Screen name="Training" component={TrainingScreen} options={{ headerShown: true }} />
+        {/* </>
+        )} */}
+        <Drawer.Screen name="StartingPage" component={StartingPage} />
       </Drawer.Navigator>
     </NavigationContainer>
   )

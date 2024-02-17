@@ -3,6 +3,7 @@ import axios from 'axios';
 import * as SecureStore from 'expo-secure-store';
 import { jwtDecode } from 'jwt-decode';
 import 'core-js/stable/atob';
+import { Alert } from 'react-native';
 
 interface AuthProps {
   authState?: { token: string | null; authenticated: boolean | null };
@@ -10,6 +11,7 @@ interface AuthProps {
   onLogin?: (loginForm: { email: string; password: string }) => Promise<any>;
   onLogOut?: () => Promise<any>;
   test?: string;
+  userInfo?: { userName: string | null; email: string | null };
 }
 
 const TOKEN_KEY = 'access_token';
@@ -29,6 +31,14 @@ export const AuthProvider = ({ children }: any) => {
     authenticated: null,
   });
 
+  const [userInfo, setUserInfo] = useState<{
+    userName: string | null;
+    email: string | null;
+  }>({
+    userName: null,
+    email: null,
+  });
+
   const handleLogin = async (loginForm: {
     email: string;
     password: string;
@@ -41,12 +51,13 @@ export const AuthProvider = ({ children }: any) => {
           token: token,
           authenticated: true,
         });
+
         axios.defaults.headers.common['Authorization'] = `Bearer ${token}`;
         await SecureStore.setItemAsync(TOKEN_KEY, token);
         return true;
       })
       .catch((error) => {
-        console.error(error);
+        Alert.alert('Login Fail', 'Please check your account and login again!');
         return false;
       });
   };
@@ -67,10 +78,14 @@ export const AuthProvider = ({ children }: any) => {
       const token = await SecureStore.getItemAsync(TOKEN_KEY);
       if (token) {
         axios.defaults.headers.common['Authorization'] = `Bearer ${token}`;
-        console.log('token for decode', token);
         try {
           const decoded = jwtDecode(token);
-          console.log('decode', decoded);
+          setUserInfo({
+            // @ts-ignore: Unreachable code error
+            userName: decoded.name,
+            // @ts-ignore: Unreachable code error
+            email: decoded.email,
+          });
         } catch (error) {
           console.log(error);
         }
@@ -90,6 +105,7 @@ export const AuthProvider = ({ children }: any) => {
     onLogin: handleLogin,
     onLogOut: handleLogOut,
     test: test,
+    userInfo: userInfo,
   };
 
   return <AuthContext.Provider value={value}>{children}</AuthContext.Provider>;
