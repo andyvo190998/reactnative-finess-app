@@ -11,7 +11,12 @@ interface AuthProps {
   onLogin?: (loginForm: { email: string; password: string }) => Promise<any>;
   onLogOut?: () => Promise<any>;
   test?: string;
-  userInfo?: { userName: string | null; email: string | null };
+  userInfo?: {
+    userName: string | null;
+    email: string | null;
+    trialEndDate: string | null;
+    membership: string | null;
+  };
 }
 
 const TOKEN_KEY = 'access_token';
@@ -34,9 +39,13 @@ export const AuthProvider = ({ children }: any) => {
   const [userInfo, setUserInfo] = useState<{
     userName: string | null;
     email: string | null;
+    membership: string | null;
+    trialEndDate: string | null;
   }>({
     userName: null,
     email: null,
+    trialEndDate: null,
+    membership: null,
   });
 
   const handleLogin = async (loginForm: {
@@ -80,14 +89,19 @@ export const AuthProvider = ({ children }: any) => {
         axios.defaults.headers.common['Authorization'] = `Bearer ${token}`;
         try {
           const decoded = jwtDecode(token);
+          // @ts-ignore: Unreachable code error
           setUserInfo({
             // @ts-ignore: Unreachable code error
             userName: decoded.name,
             // @ts-ignore: Unreachable code error
             email: decoded.email,
+            // @ts-ignore: Unreachable code error
+            membership: decoded.membership,
+            // @ts-ignore: Unreachable code error
+            trialEndDate: decoded.trialEndDate,
           });
         } catch (error) {
-          console.log(error);
+          console.error(error);
         }
 
         setAuthState({

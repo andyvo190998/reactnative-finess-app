@@ -43,7 +43,7 @@ const Welcome = () => {
         <View style={styles.searchWrapper}>
           <TextInput
             value=""
-            onChange={(e) => console.log(e.target)}
+            // onChange={(e) => console.log(e.target)}
             placeholder="What are you looking for!"
             style={styles.searchInput}
           />

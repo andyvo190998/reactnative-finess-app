@@ -30,11 +30,12 @@ export const login = async (req, res) => {
         req.body.password,
         user.password
     )
-
     if (isValidPassword) {
         const token = jwt.sign({
             name: user.name,
-            email: user.email
+            email: user.email,
+            membership: user.membership,
+            trialEndDate: user.trialEndDate
         }, 'secret123')
 
         // const expirationTime = 10 * 60 * 10000; //10 minutes in milliseconds
