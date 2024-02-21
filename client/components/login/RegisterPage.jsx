@@ -33,6 +33,9 @@ export default function RegisterPage({ navigation }) {
   const handleRegistration = async () => {
     const checkValidInput = isFormValid();
     if (checkValidInput === true) {
+      // fetch('https://dummyjson.com/todos')
+      //   .then((res) => res.json())
+      //   .then(console.log);
       await axios
         .post('http://192.168.56.1:5000/api/users/register/', registrationForm)
         .then(() => {

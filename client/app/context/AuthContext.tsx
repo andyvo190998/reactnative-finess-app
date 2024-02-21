@@ -61,6 +61,13 @@ export const AuthProvider = ({ children }: any) => {
           authenticated: true,
         });
 
+        const user = res.data.authenticatedUser;
+        setUserInfo({
+          userName: user.name,
+          email: user.email,
+          trialEndDate: user.trialEndDate,
+          membership: user.membership,
+        });
         axios.defaults.headers.common['Authorization'] = `Bearer ${token}`;
         await SecureStore.setItemAsync(TOKEN_KEY, token);
         return true;
@@ -80,6 +87,12 @@ export const AuthProvider = ({ children }: any) => {
       token: null,
       authenticated: false,
     });
+    setUserInfo({
+      userName: null,
+      email: null,
+      trialEndDate: null,
+      membership: null,
+    });
   };
 
   useEffect(() => {
@@ -89,6 +102,7 @@ export const AuthProvider = ({ children }: any) => {
         axios.defaults.headers.common['Authorization'] = `Bearer ${token}`;
         try {
           const decoded = jwtDecode(token);
+          console.log(decoded);
           // @ts-ignore: Unreachable code error
           setUserInfo({
             // @ts-ignore: Unreachable code error

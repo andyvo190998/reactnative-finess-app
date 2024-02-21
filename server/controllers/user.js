@@ -5,6 +5,7 @@ import bcrypt from 'bcryptjs'
 import User from '../models/user.js'
 import jwt from 'jsonwebtoken'
 export const addUser = async (req, res) => {
+    console.log('here')
     try {
         const newPassword = await bcrypt.hash(req.body.password, 10)
         await User.create({
@@ -26,17 +27,19 @@ export const login = async (req, res) => {
     if (!user) {
         return res.status(404).json('User not found!')
     }
+    console.log(user)
     const isValidPassword = await bcrypt.compare(
         req.body.password,
         user.password
     )
     if (isValidPassword) {
-        const token = jwt.sign({
+        const authenticatedUser = {
             name: user.name,
             email: user.email,
             membership: user.membership,
-            trialEndDate: user.trialEndDate
-        }, 'secret123')
+            trialEndDate: user.trialEndDate,
+        }
+        const token = jwt.sign(authenticatedUser, 'secret123')
 
         // const expirationTime = 10 * 60 * 10000; //10 minutes in milliseconds
         // const expiryDate = new Date(Date.now() + expirationTime);
@@ -45,9 +48,30 @@ export const login = async (req, res) => {
         //     httpOnly: true,
         //     sameSite: 'none',
         // }).status(200).json('login success')
-        return res.status(200).json({ token: token })
+        return res.status(200).json({ token: token, authenticatedUser: authenticatedUser })
 
     } else {
         return res.status(401).json('Invalid email or password')
     }
+}
+
+export const upgrade = async (req, res) => {
+    try {
+        const result = await User.findOneAndUpdate({
+            email: req.body.email
+        }, {
+            membership: req.body.newMembership,
+            trialEndDate: null
+        }, {
+            new: true
+        })
+        return res.status(200).json(result)
+    } catch (error) {
+        return res.status(404).json(error)
+    }
+
+
+    // if (!user) {
+    //     return res.status(404).json('User not found!')
+    // }
 }

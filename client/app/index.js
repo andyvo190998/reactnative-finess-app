@@ -12,7 +12,8 @@ import {
   LoginScreen,
   RegisterPage,
   Profile,
-  TrainingScreen
+  TrainingScreen,
+  Subscription
 } from '../components';
 import { DrawerActions, NavigationContainer } from '@react-navigation/native';
 import { createDrawerNavigator } from '@react-navigation/drawer';
@@ -77,6 +78,7 @@ export default function Home() {
         <Drawer.Screen name="Register" component={RegisterPage} />
         <Drawer.Screen name="Profile" component={Profile} options={{ headerShown: false }} />
         <Drawer.Screen name="Training" component={TrainingScreen} options={{ headerShown: true }} />
+        <Drawer.Screen name="Subscription" component={Subscription} options={{ headerShown: true }} />
         {/* </>
         )} */}
         <Drawer.Screen name="StartingPage" component={StartingPage} />

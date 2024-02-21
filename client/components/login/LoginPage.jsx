@@ -31,6 +31,10 @@ const LoginScreen = () => {
 
   useEffect(() => {
     if (authState.authenticated) {
+      setLoginForm({
+        email: '',
+        password: '',
+      });
       navigation.navigate('Home');
     }
   }, [authState]);

@@ -110,8 +110,8 @@ const DrawerContent = (props) => {
             <Icon name="exit-to-app" color={color} size={size} />
           )}
           label="Sign Out"
-          onPress={() => {
-            onLogOut();
+          onPress={async () => {
+            await onLogOut();
             props.navigation.navigate('Login');
           }}
         />
