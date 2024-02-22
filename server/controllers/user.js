@@ -5,7 +5,6 @@ import bcrypt from 'bcryptjs'
 import User from '../models/user.js'
 import jwt from 'jsonwebtoken'
 export const addUser = async (req, res) => {
-    console.log('here')
     try {
         const newPassword = await bcrypt.hash(req.body.password, 10)
         await User.create({
@@ -27,7 +26,6 @@ export const login = async (req, res) => {
     if (!user) {
         return res.status(404).json('User not found!')
     }
-    console.log(user)
     const isValidPassword = await bcrypt.compare(
         req.body.password,
         user.password
@@ -56,6 +54,7 @@ export const login = async (req, res) => {
 }
 
 export const upgrade = async (req, res) => {
+    console.log(req.body)
     try {
         const result = await User.findOneAndUpdate({
             email: req.body.email

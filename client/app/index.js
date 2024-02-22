@@ -24,6 +24,9 @@ const StackNav = ({ navigation }) => {
   const handlePress = () => {
     navigation.dispatch(DrawerActions.openDrawer())
   }
+  const handleNavigateHome = () => {
+    navigation.navigate('Profile')
+  }
   return (
     <SafeAreaView style={{ flex: 1, backgroundColor: COLORS.lightWhite }}>
       <Stack.Screen
@@ -34,7 +37,7 @@ const StackNav = ({ navigation }) => {
             <ScreenHeaderBtn iconUrl={icons.menu} dimension="60%" handlePress={handlePress} />
           ),
           headerRight: () => (
-            <ScreenHeaderBtn iconUrl={images.profile} dimension="100%" />
+            <ScreenHeaderBtn handlePress={handleNavigateHome} iconUrl={images.profile} dimension="100%" />
           ),
           headerTitle: '',
           headerShown: true,
@@ -78,7 +81,7 @@ export default function Home() {
         <Drawer.Screen name="Register" component={RegisterPage} />
         <Drawer.Screen name="Profile" component={Profile} options={{ headerShown: false }} />
         <Drawer.Screen name="Training" component={TrainingScreen} options={{ headerShown: true }} />
-        <Drawer.Screen name="Subscription" component={Subscription} options={{ headerShown: true }} />
+        <Drawer.Screen name="Subscription" component={Subscription} options={{ headerShown: false }} />
         {/* </>
         )} */}
         <Drawer.Screen name="StartingPage" component={StartingPage} />
