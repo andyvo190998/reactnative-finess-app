@@ -17,6 +17,7 @@ import { useAuth } from "@/app/context/AuthContext";
 import Icon from "react-native-vector-icons/FontAwesome5";
 import IconCommunity from "react-native-vector-icons/MaterialCommunityIcons";
 import { LinearGradient } from "expo-linear-gradient";
+import { jwtDecode } from "jwt-decode";
 
 const styles = StyleSheet.create({
 	container: {
@@ -39,7 +40,7 @@ const styles = StyleSheet.create({
 
 //https://www.uplabs.com/posts/premium-subscription-plan-app-ui-kit
 const Subscription = () => {
-	const { userInfo } = useAuth();
+	const { userInfo, setAuthState, setUserInfo } = useAuth();
 	const [accessToken, setAccessToken] = useState("");
 	const [paypalUrl, setPaypalUrl] = useState(null);
 	const [authId, setAuthId] = useState(null);
@@ -72,7 +73,21 @@ const Subscription = () => {
 				email: userInfo.email,
 				newMembership: type,
 			})
-			.then((res) => console.log(res))
+			.then((res) => {
+				console.log("new token", res.data.token);
+				const decoded = jwtDecode(res.data.token);
+				console.log("decode", decoded);
+				setUserInfo({
+					userName: decoded.name,
+					email: decoded.email,
+					membership: decoded.membership,
+					trialEndDate: decoded.trialEndDate,
+				});
+				setAuthState((previous) => ({
+					...previous,
+					token: res.data.token,
+				}));
+			})
 			.catch((error) => console.error(error));
 		setUpgradeType("");
 	};
@@ -217,7 +232,6 @@ const Subscription = () => {
 			) : (
 				<ScrollView
 					style={styles.container}
-					// className='  flex-1'
 					showsVerticalScrollIndicator={false}
 					showsHorizontalScrollIndicator={false}
 				>
@@ -263,26 +277,6 @@ const Subscription = () => {
 							</View>
 						</View>
 						<View className=' w-full  flex justify-center items-center'>
-							{/* <TouchableOpacity
-							onPress={() => {
-								setUpgradeType("Plus");
-								handleGetAccessToken("Plus");
-							}}
-							className=' px-5 py-1 rounded-2xl bg-green-500 mb-1'
-						>
-							<Text className='text-red-500'>Upgrade Plus</Text>
-						</TouchableOpacity>
-						<TouchableOpacity
-							onPress={() => handleGetAccessToken("Premium")}
-							className=' px-5 py-1 rounded-2xl bg-yellow-500 mb-1'
-						>
-							<Text className='text-red-500'>
-								Upgrade Premium
-							</Text>
-						</TouchableOpacity>
-						<TouchableOpacity>
-							<Link href='/'>Home</Link>
-						</TouchableOpacity> */}
 							<View className='w-full px-5'>
 								{membershipType.map((item) => (
 									<View key={item.id}>
