@@ -292,54 +292,63 @@ const Subscription = () => {
 											end={{ x: 1, y: 0.25 }}
 											colors={item.color}
 										>
-											<View
-												className={`border border-white min-w-10 flex flex-col justify-center items-center px-3`}
-											>
-												<IconCommunity
-													name={item.icon}
-													size={50}
-												/>
-												<Text className='mt-2'>
-													{item.name}
-												</Text>
-											</View>
-											<View
-												className={`border border-white flex-1 flex flex-col justify-center items-center`}
-											>
-												<View className='flex-1  flex justify-center items-center flex-col'>
-													<Text className='color-white'>
-														<Text
-															className='text-3xl'
-															style={{
-																fontFamily:
-																	"DMBold",
-															}}
-														>
-															€{item.price}/
-														</Text>
-														<Text>Mon</Text>
+											<View className='flex flex-row w-full border border-white rounded-xl'>
+												<View
+													className={`
+												border-r border-white min-w-10 relative px-3 flex justify-center items-center `}
+												>
+													{/* <View className='flex flex-col justify-center items-center absolute border bottom-10'> */}
+													<IconCommunity
+														name={item.icon}
+														size={50}
+													/>
+													<Text className='mt-2'>
+														{item.name}
 													</Text>
-													<Text>{item.benefits}</Text>
+													{/* </View> */}
 												</View>
-												<View className=' w-full pb-2 flex justify-end items-end px-4'>
-													<TouchableOpacity
-														onPress={() => {
-															setUpgradeType(
-																item.name
-															);
-															handleGetAccessToken(
-																item.name,
-																item.price
-															);
-														}}
-														className=' w-fit flex flex-row gap-1 items-center'
-													>
-														<Text>Choose Plan</Text>
-														<Icon
-															name='angle-right'
-															size={10}
-														/>
-													</TouchableOpacity>
+												<View
+													className={` flex-1 flex flex-col justify-center items-center`}
+												>
+													<View className='flex-1  flex justify-center items-center flex-col'>
+														<Text className='color-white'>
+															<Text
+																className='text-3xl'
+																style={{
+																	fontFamily:
+																		"DMBold",
+																}}
+															>
+																€{item.price}/
+															</Text>
+															<Text>Mon</Text>
+														</Text>
+														<Text>
+															{item.benefits}
+														</Text>
+													</View>
+													<View className=' w-full pb-2 flex justify-end items-end px-4'>
+														<TouchableOpacity
+															onPress={() => {
+																setUpgradeType(
+																	item.name
+																);
+																handleGetAccessToken(
+																	item.name,
+																	item.price
+																);
+															}}
+															className=' w-fit flex flex-row gap-1 items-center'
+														>
+															<Text>
+																Choose Plan
+															</Text>
+															<Icon
+																name='angle-right'
+																size={10}
+															/>
+														</TouchableOpacity>
+													</View>
 												</View>
 											</View>
 										</LinearGradient>
