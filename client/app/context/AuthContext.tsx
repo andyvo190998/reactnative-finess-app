@@ -4,6 +4,8 @@ import * as SecureStore from "expo-secure-store";
 import { jwtDecode } from "jwt-decode";
 import "core-js/stable/atob";
 import { Alert } from "react-native";
+// @ts-ignore: Unreachable code error
+import { EXPRESS_API } from "@env";
 
 interface AuthProps {
 	authState?: { token: string | null; authenticated: boolean | null };
@@ -53,7 +55,7 @@ export const AuthProvider = ({ children }: any) => {
 		password: string;
 	}) => {
 		await axios
-			.post("http://192.168.56.1:5000/api/users/login", loginForm)
+			.post(`${EXPRESS_API}/api/users/login`, loginForm)
 			.then(async (res) => {
 				const token = res.data.token;
 				setAuthState({

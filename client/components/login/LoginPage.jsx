@@ -9,10 +9,7 @@ import {
 	StyleSheet,
 } from "react-native";
 import { SafeAreaView } from "react-native-safe-area-context";
-import { ArrowLeftIcon } from "react-native-heroicons/solid";
-// import { themeColors } from '../theme';
 import { useNavigation } from "@react-navigation/native";
-import axios from "axios";
 import { useAuth } from "@/app/context/AuthContext";
 
 const LoginScreen = () => {
