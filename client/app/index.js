@@ -17,6 +17,7 @@ import {
 } from '../components';
 import { DrawerActions, NavigationContainer } from '@react-navigation/native';
 import { createDrawerNavigator } from '@react-navigation/drawer';
+import { useState } from 'react';
 LogBox.ignoreLogs(['new NativeEventEmitter']);
 LogBox.ignoreLogs(["VirtualizedLists should never be nested"])
 
@@ -27,6 +28,7 @@ const StackNav = ({ navigation }) => {
   const handleNavigateHome = () => {
     navigation.navigate('Profile')
   }
+  const [trainingLevel, setTrainingLevel] = useState('Beginner')
   return (
     <SafeAreaView style={{ flex: 1, backgroundColor: COLORS.lightWhite }}>
       <Stack.Screen
@@ -51,8 +53,8 @@ const StackNav = ({ navigation }) => {
           }}
         >
 
-          <Welcome />
-          <TrainingList navigation={navigation} />
+          <Welcome setTrainingLevel={setTrainingLevel} />
+          <TrainingList navigation={navigation} trainingLevel={trainingLevel} />
         </View>
       </ScrollView>
     </SafeAreaView>

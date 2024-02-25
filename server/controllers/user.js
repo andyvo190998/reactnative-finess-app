@@ -54,9 +54,8 @@ export const login = async (req, res) => {
 }
 
 export const upgrade = async (req, res) => {
-    console.log(req.body)
     try {
-        const result = await User.findOneAndUpdate({
+        const user = await User.findOneAndUpdate({
             email: req.body.email
         }, {
             membership: req.body.newMembership,
@@ -64,7 +63,14 @@ export const upgrade = async (req, res) => {
         }, {
             new: true
         })
-        return res.status(200).json(result)
+        const authenticatedUser = {
+            name: user.name,
+            email: user.email,
+            membership: user.membership,
+            trialEndDate: user.trialEndDate,
+        }
+        const token = jwt.sign(authenticatedUser, 'secret123')
+        return res.status(200).json({ token: token, authenticatedUser: authenticatedUser })
     } catch (error) {
         return res.status(404).json(error)
     }

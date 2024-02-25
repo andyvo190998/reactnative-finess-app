@@ -5,6 +5,7 @@ import {
 	StyleSheet,
 	Alert,
 	ScrollView,
+	Image,
 } from "react-native";
 import React, { useState } from "react";
 import { Link, useLocalSearchParams } from "expo-router";
@@ -15,9 +16,11 @@ import qs from "qs";
 import WebView from "react-native-webview";
 import { useAuth } from "@/app/context/AuthContext";
 import Icon from "react-native-vector-icons/FontAwesome5";
+import Feather from "react-native-vector-icons/Feather";
 import IconCommunity from "react-native-vector-icons/MaterialCommunityIcons";
 import { LinearGradient } from "expo-linear-gradient";
 import { jwtDecode } from "jwt-decode";
+import { images } from "@/constants";
 
 const styles = StyleSheet.create({
 	container: {
@@ -45,24 +48,22 @@ const Subscription = () => {
 	const [paypalUrl, setPaypalUrl] = useState(null);
 	const [authId, setAuthId] = useState(null);
 	const [upgradeType, setUpgradeType] = useState("");
-
 	const membershipType = [
 		{
 			id: 1,
 			icon: "bike",
 			name: "Plus",
 			price: 10,
-			benefits:
-				"Lorem ipsum, dolor sit amet consectetur adipisicing elit. Vero, pariatur?",
+			benefits: ["Benefit 1", "Benefit 2"],
+
 			color: ["rgba(0, 255, 235, 1)", "rgba(106, 144, 240, 1)"],
 		},
 		{
 			id: 2,
 			icon: "airplane",
-			price: 100,
-			benefits:
-				"Lorem ipsum, dolor sit amet consectetur adipisicing elit. Vero, pariatur?",
 			name: "Premium",
+			price: 100,
+			benefits: ["Benefit 1", "Benefit 2", "Benefit 3"],
 			color: ["rgba(213,205,125,1)", "rgba(191,173,61,1)"],
 		},
 	];
@@ -74,9 +75,7 @@ const Subscription = () => {
 				newMembership: type,
 			})
 			.then((res) => {
-				console.log("new token", res.data.token);
 				const decoded = jwtDecode(res.data.token);
-				console.log("decode", decoded);
 				setUserInfo({
 					userName: decoded.name,
 					email: decoded.email,
@@ -234,34 +233,46 @@ const Subscription = () => {
 					style={styles.container}
 					showsVerticalScrollIndicator={false}
 					showsHorizontalScrollIndicator={false}
+					className='bg-[#1c1c1d]'
 				>
 					<View className='h-full flex justify-center items-center  flex-col'>
 						<View className=' flex-1 mt-14 flex flex-col items-center justify-between w-full min-h-[50vh] mb-5 '>
 							<View className=' flex flex-col justify-center items-center'>
-								<View className='bg-slate-600 rounded-full w-32 h-32 flex items-center justify-center  shadow hover:shadow-2xl mb-4'>
-									<Icon
+								<View className='bg-slate-600 rounded-full w-36 h-36 flex items-center justify-center  shadow hover:shadow-2xl mb-4'>
+									{/* <Icon
 										className='mb-2'
 										name='award'
 										color={"white"}
 										size={80}
+									/> */}
+									<Image
+										resizeMode='contain'
+										source={images.logo}
+										className='rounded-full'
+										style={{
+											width: "100%",
+											height: undefined,
+											aspectRatio: 1,
+										}}
 									/>
 								</View>
 								<Text
-									className='text-xl '
+									className='text-xl text-slate-300'
 									style={{ fontFamily: "DMBold" }}
 								>
-									FREE TRIAL PLAN
+									{userInfo.membership?.toUpperCase()} PLAN
 								</Text>
 							</View>
-
+							{/* {userInfo.membership === "Free Trial" && ( */}
 							<View className='flex flex-col justify-center items-center w-1/2 '>
-								<Text className='color-red-300 text-md mb-4'>
+								<Text className='color-red-300 text-md mb-4 '>
 									10 Days Left!
 								</Text>
-								<Text className='text-center '>
+								<Text className='text-center text-slate-300 '>
 									Your plan will expire on February 22, 2024
 								</Text>
 							</View>
+							{/* )} */}
 
 							<View className='w-full h-10  flex flex-row justify-center items-center  '>
 								<View className='border border-gray-500 w-[30vw]' />
@@ -304,8 +315,8 @@ const Subscription = () => {
 												<View
 													className={` flex-1 flex flex-col justify-center items-center`}
 												>
-													<View className='flex-1  flex justify-center items-center flex-col'>
-														<Text className='color-white'>
+													<View className='flex-1  flex justify-center items-start flex-col'>
+														<Text className='color-white mb-2'>
 															<Text
 																className='text-3xl'
 																style={{
@@ -313,13 +324,24 @@ const Subscription = () => {
 																		"DMBold",
 																}}
 															>
-																€{item.price}/
+																{item.price}€/
 															</Text>
 															<Text>Mon</Text>
 														</Text>
-														<Text>
-															{item.benefits}
-														</Text>
+														{item.benefits.map(
+															(item) => (
+																<View className='flex flex-row items-center gap-2 mb-2'>
+																	<Feather name='check-circle' />
+																	<Text
+																		key={
+																			item
+																		}
+																	>
+																		{item}
+																	</Text>
+																</View>
+															)
+														)}
 													</View>
 													<View className=' w-full pb-2 flex justify-end items-end px-4'>
 														<TouchableOpacity

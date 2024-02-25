@@ -17,21 +17,17 @@ import { useAuth } from "@/app/context/AuthContext";
 import { jwtDecode } from "jwt-decode";
 
 const Drawer = createDrawerNavigator();
-const Welcome = () => {
+const Welcome = ({ setTrainingLevel }) => {
 	const { authState, userInfo } = useAuth();
 
 	const trainingType = ["Beginner", "Advanced", "Pro"];
 	const router = useRouter();
-	const [activeJobType, setActiveJobType] = useState("Cardio");
+	const [activeJobType, setActiveJobType] = useState("Beginner");
 
-	const selectIcon = (icon) => {
-		if (icon === "Beginner") {
-			return "emoticon-excited-outline";
-		} else if (icon === "Advanced") {
-			return "emoticon-wink-outline";
-		} else {
-			return "emoticon-devil-outline";
-		}
+	const icons = {
+		Beginner: "emoticon-excited-outline",
+		Advanced: "emoticon-wink-outline",
+		Pro: "emoticon-devil-outline",
 	};
 	return (
 		<View>
@@ -70,13 +66,14 @@ const Welcome = () => {
 						return (
 							<TouchableOpacity
 								onPress={() => {
+									console.log(item);
 									setActiveJobType(item);
-									router.push(`/user/${item.toLowerCase()}`);
+									setTrainingLevel(item);
 								}}
 								style={styles.tab(activeJobType, item)}
 							>
 								<Icon
-									name={selectIcon(item)}
+									name={icons[item]}
 									size={30}
 									color={"#ff9a00"}
 								/>
