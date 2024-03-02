@@ -37,7 +37,10 @@ export default function RegisterPage({ navigation }) {
 			//   .then((res) => res.json())
 			//   .then(console.log);
 			await axios
-				.post(`${EXPRESS_API}/api/users/register/`, registrationForm)
+				.post(
+					`${"http://192.168.56.1:5000"}/api/users/register/`,
+					registrationForm
+				)
 				.then(() => {
 					Alert.alert("Registration Success!", "Please Login!", [
 						{

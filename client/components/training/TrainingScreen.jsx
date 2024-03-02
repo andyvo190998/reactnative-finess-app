@@ -6,23 +6,24 @@ import {
 	Alert,
 	Button,
 	Image,
-} from "react-native";
-import React, { useEffect, useState } from "react";
-import { useNavigation } from "expo-router";
-import { Audio, ResizeMode, Video } from "expo-av";
+} from 'react-native';
+import React, { useEffect, useState } from 'react';
+import { useNavigation } from 'expo-router';
+import { Audio, ResizeMode, Video } from 'expo-av';
 // import Video from 'react-native-video';
-import Icon from "react-native-vector-icons/MaterialCommunityIcons";
-import { CountdownCircleTimer } from "react-native-countdown-circle-timer";
-const soundSource = require("../../assets/sounds/count-down-tick.mp3");
-import Modal from "react-native-modal";
-import { images } from "@/constants";
+import Icon from 'react-native-vector-icons/MaterialCommunityIcons';
+import { CountdownCircleTimer } from 'react-native-countdown-circle-timer';
+const soundSource = require('../../assets/sounds/count-down-tick.mp3');
+const successSource = require('../../assets/sounds/success.mp3');
+import Modal from 'react-native-modal';
+import { images } from '@/constants';
 
 const styles = StyleSheet.create({
 	container: {
 		flex: 1,
-		height: "100%",
-		alignItems: "flex-start",
-		justifyContent: "flex-start",
+		height: '100%',
+		alignItems: 'flex-start',
+		justifyContent: 'flex-start',
 	},
 	funcBtn: {
 		borderWidth: 1,
@@ -31,23 +32,23 @@ const styles = StyleSheet.create({
 		paddingVertical: 10,
 	},
 	text: {
-		fontWeight: "600",
+		fontWeight: '600',
 	},
 	video: {
 		flex: 0.5,
 		// height: '150%',
 		// width: 200,
-		alignSelf: "stretch",
+		alignSelf: 'stretch',
 	},
 	control: {
 		flex: 1.5,
 		// height: '150%',
 		// width: 200,
-		alignSelf: "stretch",
-		justifyContent: "center",
-		alignItems: "center",
-		display: "flex",
-		flexDirection: "column",
+		alignSelf: 'stretch',
+		justifyContent: 'center',
+		alignItems: 'center',
+		display: 'flex',
+		flexDirection: 'column',
 		gap: 20,
 	},
 });
@@ -68,14 +69,18 @@ const TrainingScreen = ({ navigation, route }) => {
 		let minutes = Math.floor((second % 3600) / 60);
 		let remainingSeconds = second % 60;
 
-		hours = hours < 10 ? "0" + hours : hours;
-		minutes = minutes < 10 ? "0" + minutes : minutes;
+		hours = hours < 10 ? '0' + hours : hours;
+		minutes = minutes < 10 ? '0' + minutes : minutes;
 		remainingSeconds =
-			remainingSeconds < 10 ? "0" + remainingSeconds : remainingSeconds;
+			remainingSeconds < 10 ? '0' + remainingSeconds : remainingSeconds;
 
-		return hours + ":" + minutes + ":" + remainingSeconds;
+		return hours + ':' + minutes + ':' + remainingSeconds;
 	};
 	const [sound, setSound] = useState();
+	const playSuccessSound = async () => {
+		const { sound } = await Audio.Sound.createAsync(successSource);
+		await sound.playAsync();
+	};
 	const playSound = async () => {
 		setIsPlaying(false);
 		const { sound } = await Audio.Sound.createAsync(soundSource);
@@ -94,12 +99,13 @@ const TrainingScreen = ({ navigation, route }) => {
 	}, []);
 
 	const [toggleModal, setToggleModal] = useState(false);
+
 	return (
 		<View style={styles.container}>
 			<Video
 				ref={video}
 				style={styles.video}
-				source={require("../../assets/videos/video1.mp4")}
+				source={require('../../assets/videos/video1.mp4')}
 				useNativeControls
 				resizeMode='cover'
 				// resizeMode={ResizeMode.CONTAIN}
@@ -107,15 +113,20 @@ const TrainingScreen = ({ navigation, route }) => {
 				shouldPlay
 				// onPlaybackStatusUpdate={setStatus}
 			/>
-			<View style={styles.control} className='h-ful'>
+			<View
+				style={styles.control}
+				className='h-ful'
+			>
 				<View className='flex flex-row gap-5'>
 					<Text className='text-lg'>
-						Exercise :{" "}
-						<Text style={{ fontFamily: "DMBold" }}>{count}</Text>
+						Exercise :{' '}
+						<Text style={{ fontFamily: 'DMBold' }}>{count}</Text>
 					</Text>
 					<Text className='text-lg'>
-						Unit :{" "}
-						<Text style={{ fontFamily: "DMBold" }}>{unit}</Text>
+						Unit :{' '}
+						<Text style={{ fontFamily: 'DMBold' }}>
+							{unit}/{maxUnits}
+						</Text>
 					</Text>
 				</View>
 				<CountdownCircleTimer
@@ -130,8 +141,8 @@ const TrainingScreen = ({ navigation, route }) => {
 					}
 					colors={
 						isTraining
-							? ["#004777", "#F7B801", "#A30000", "#A30000"]
-							: ["#A30000", "#F7B801", "#004777", "#A30000"]
+							? ['#004777', '#F7B801', '#A30000', '#A30000']
+							: ['#A30000', '#F7B801', '#004777', '#A30000']
 					}
 					colorsTime={[
 						exerciseLong,
@@ -143,27 +154,48 @@ const TrainingScreen = ({ navigation, route }) => {
 					strokeWidth={20}
 					onUpdate={(remainingTime) => {
 						if (remainingTime === 0) {
-							playSound();
+							if (count < 5 && count !== 0) {
+								playSound();
 
-							if (count < 5) {
-								setCount((previous) => previous + 1);
+								if (isTraining === false) {
+									setCount((previous) => previous + 1);
+								}
 								setIsTraining(!isTraining);
+								setKey((prevKey) => prevKey + 1);
+							} else if (count === 0) {
+								playSound();
+
+								setCount((previous) => previous + 1);
+								// setIsPlaying(true);
+								setIsTraining(true);
+								setKey((prevKey) => prevKey + 1);
 							} else {
-								setIsTraining(null);
-								if (unit <= maxUnits) {
+								if (unit < maxUnits) {
+									playSound();
+
 									setUnit((previous) => previous + 1);
+									setIsTraining(null);
+									setCount(0);
+									setKey((prevKey) => prevKey + 1);
 								} else {
+									playSuccessSound();
 									setIsPlaying(false);
 									setToggleModal(true);
+
+									setIsTraining(true);
+									// setExerciseLong(45);
+									setUnit(1);
+									setCount(1);
+									setKey((prevKey) => prevKey + 1);
+
 									return;
 								}
 							}
-							setKey((prevKey) => prevKey + 1);
 						}
 					}}
 					onComplete={() => {
 						return {
-							shouldRepeat: isPlaying,
+							shouldRepeat: isPlaying && unit < maxUnits,
 							delay: 0,
 						};
 					}}
@@ -175,7 +207,7 @@ const TrainingScreen = ({ navigation, route }) => {
 					)}
 				</CountdownCircleTimer>
 				<Text className='text-2xl font-semibold'>
-					{isTraining ? "TRAINING TIME" : "RESTING TIME"}
+					{isTraining ? 'TRAINING TIME' : 'RESTING TIME'}
 				</Text>
 				<View className='flex flex-row items-center justify-center gap-2 w-full'>
 					<TouchableOpacity
@@ -192,9 +224,9 @@ const TrainingScreen = ({ navigation, route }) => {
 					</TouchableOpacity>
 					<TouchableOpacity onPress={() => setIsPlaying(!isPlaying)}>
 						<Icon
-							name={isPlaying ? "pause" : "play"}
+							name={isPlaying ? 'pause' : 'play'}
 							size={80}
-							color={"#ff9a00"}
+							color={'#ff9a00'}
 						/>
 					</TouchableOpacity>
 					<TouchableOpacity
@@ -223,29 +255,31 @@ const TrainingScreen = ({ navigation, route }) => {
 				isVisible={toggleModal}
 				onBackdropPress={() => setToggleModal(false)}
 			>
-				<View className='flex justify-center items-center'>
-					<Image
-						source={images.reward}
-						resizeMode='contain'
-						style={{
-							width: "100%",
-							height: undefined,
-							aspectRatio: 1,
-						}}
-					/>
-					<Text
-						className='text-slate-300 text-2xl'
-						style={{ fontFamily: "DMBold" }}
-					>
-						Congratulation!
-					</Text>
-					<Text
-						className='text-slate-300 text-lg'
-						style={{ fontFamily: "DMBold" }}
-					>
-						You have completed today's training.
-					</Text>
-				</View>
+				<TouchableOpacity onPress={() => setToggleModal(false)}>
+					<View className='flex justify-center items-center'>
+						<Image
+							source={images.reward}
+							resizeMode='contain'
+							style={{
+								width: '100%',
+								height: undefined,
+								aspectRatio: 1,
+							}}
+						/>
+						<Text
+							className='text-slate-300 text-2xl'
+							style={{ fontFamily: 'DMBold' }}
+						>
+							Congratulation!
+						</Text>
+						<Text
+							className='text-slate-300 text-lg'
+							style={{ fontFamily: 'DMBold' }}
+						>
+							You have completed today's training.
+						</Text>
+					</View>
+				</TouchableOpacity>
 			</Modal>
 		</View>
 	);

@@ -1,11 +1,11 @@
-import { createContext, useContext, useEffect, useState } from "react";
-import axios from "axios";
-import * as SecureStore from "expo-secure-store";
-import { jwtDecode } from "jwt-decode";
-import "core-js/stable/atob";
-import { Alert } from "react-native";
+import { createContext, useContext, useEffect, useState } from 'react';
+import axios from 'axios';
+import * as SecureStore from 'expo-secure-store';
+import { jwtDecode } from 'jwt-decode';
+import 'core-js/stable/atob';
+import { Alert } from 'react-native';
 // @ts-ignore: Unreachable code error
-import { EXPRESS_API } from "@env";
+import { EXPRESS_API } from '@env';
 
 interface AuthProps {
 	authState?: { token: string | null; authenticated: boolean | null };
@@ -21,8 +21,8 @@ interface AuthProps {
 	};
 }
 
-const TOKEN_KEY = "access_token";
-export const API_URL = "";
+const TOKEN_KEY = 'access_token';
+export const API_URL = '';
 const AuthContext = createContext<AuthProps>({});
 
 export const useAuth = () => {
@@ -55,7 +55,7 @@ export const AuthProvider = ({ children }: any) => {
 		password: string;
 	}) => {
 		await axios
-			.post(`${EXPRESS_API}/api/users/login`, loginForm)
+			.post(`${'http://192.168.56.1:5000'}/api/users/login`, loginForm)
 			.then(async (res) => {
 				const token = res.data.token;
 				setAuthState({
@@ -71,15 +71,15 @@ export const AuthProvider = ({ children }: any) => {
 					membership: user.membership,
 				});
 				axios.defaults.headers.common[
-					"Authorization"
+					'Authorization'
 				] = `Bearer ${token}`;
 				await SecureStore.setItemAsync(TOKEN_KEY, token);
 				return true;
 			})
 			.catch((error) => {
 				Alert.alert(
-					"Login Fail",
-					"Please check your account and login again!"
+					'Login Fail',
+					'Please check your account and login again!'
 				);
 				return false;
 			});
@@ -88,7 +88,7 @@ export const AuthProvider = ({ children }: any) => {
 	const handleLogOut = async () => {
 		await SecureStore.deleteItemAsync(TOKEN_KEY);
 
-		axios.defaults.headers.common["Authorization"] = "";
+		axios.defaults.headers.common['Authorization'] = '';
 
 		setAuthState({
 			token: null,
@@ -107,11 +107,10 @@ export const AuthProvider = ({ children }: any) => {
 			const token = await SecureStore.getItemAsync(TOKEN_KEY);
 			if (token) {
 				axios.defaults.headers.common[
-					"Authorization"
+					'Authorization'
 				] = `Bearer ${token}`;
 				try {
 					const decoded = jwtDecode(token);
-					console.log("decode", decoded);
 					// @ts-ignore: Unreachable code error
 					setUserInfo({
 						// @ts-ignore: Unreachable code error
@@ -135,7 +134,7 @@ export const AuthProvider = ({ children }: any) => {
 		};
 		loadToken();
 	}, []);
-	const test = "123";
+	const test = '123';
 	const value = {
 		setAuthState: setAuthState,
 		authState: authState,

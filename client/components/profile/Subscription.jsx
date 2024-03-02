@@ -70,7 +70,7 @@ const Subscription = () => {
 
 	const upgradeMembership = async (type) => {
 		await axios
-			.put(`${EXPRESS_API}/api/users/upgrade/`, {
+			.put(`${"http://192.168.56.1:5000"}/api/users/upgrade/`, {
 				email: userInfo.email,
 				newMembership: type,
 			})
