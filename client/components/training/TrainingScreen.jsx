@@ -3,20 +3,17 @@ import {
 	Text,
 	StyleSheet,
 	TouchableOpacity,
-	Alert,
-	Button,
 	Image,
 } from 'react-native';
 import React, { useEffect, useState } from 'react';
-import { useNavigation } from 'expo-router';
-import { Audio, ResizeMode, Video } from 'expo-av';
-// import Video from 'react-native-video';
+import { Audio, Video } from 'expo-av';
 import Icon from 'react-native-vector-icons/MaterialCommunityIcons';
 import { CountdownCircleTimer } from 'react-native-countdown-circle-timer';
 const soundSource = require('../../assets/sounds/count-down-tick.mp3');
 const successSource = require('../../assets/sounds/success.mp3');
 import Modal from 'react-native-modal';
 import { images } from '@/constants';
+import { trainingVideos } from '@/assets/works';
 
 const styles = StyleSheet.create({
 	container: {
@@ -36,14 +33,10 @@ const styles = StyleSheet.create({
 	},
 	video: {
 		flex: 0.5,
-		// height: '150%',
-		// width: 200,
 		alignSelf: 'stretch',
 	},
 	control: {
 		flex: 1.5,
-		// height: '150%',
-		// width: 200,
 		alignSelf: 'stretch',
 		justifyContent: 'center',
 		alignItems: 'center',
@@ -64,6 +57,13 @@ const TrainingScreen = ({ navigation, route }) => {
 	const video = React.useRef(null);
 	const [isPlaying, setIsPlaying] = useState(false);
 	const [key, setKey] = useState(0);
+	const [videoList, setVideoList] = useState([...trainingVideos])
+	const [playedVideos, setPlayedVideos] = useState([])
+	const firstPlay = trainingVideos[Math.floor(Math.random() * trainingVideos.length)]
+	const [videoToPlay, setVideoToPlay] = useState(firstPlay)
+
+	const [playedIndex, setPlayedIndex] = useState(firstPlay)
+
 	const turnToMinute = (second) => {
 		let hours = Math.floor(second / 3600);
 		let minutes = Math.floor((second % 3600) / 60);
@@ -100,12 +100,24 @@ const TrainingScreen = ({ navigation, route }) => {
 
 	const [toggleModal, setToggleModal] = useState(false);
 
+	function playRandomVideo() {
+		if (playedVideos.length === trainingVideos.length) {
+		  setPlayedVideos([])
+		}
+		const availableVideos = videoList.slice(0, playedIndex).concat(videoList.slice(playedIndex + 1));
+		setVideoList(availableVideos)
+		const randomIndex = Math.floor(Math.random() * availableVideos.length);
+		setPlayedIndex(randomIndex)
+		const videoToPlay = availableVideos[randomIndex];
+	  	setVideoToPlay(videoToPlay)
+	  }
+
 	return (
 		<View style={styles.container}>
 			<Video
 				ref={video}
 				style={styles.video}
-				source={require('../../assets/videos/video1.mp4')}
+				source={videoToPlay}
 				useNativeControls
 				resizeMode='cover'
 				// resizeMode={ResizeMode.CONTAIN}
@@ -156,23 +168,23 @@ const TrainingScreen = ({ navigation, route }) => {
 						if (remainingTime === 0) {
 							if (count < 5 && count !== 0) {
 								playSound();
-
 								if (isTraining === false) {
 									setCount((previous) => previous + 1);
+								} else {
+									playRandomVideo()
 								}
 								setIsTraining(!isTraining);
 								setKey((prevKey) => prevKey + 1);
 							} else if (count === 0) {
 								playSound();
-
 								setCount((previous) => previous + 1);
 								// setIsPlaying(true);
 								setIsTraining(true);
 								setKey((prevKey) => prevKey + 1);
 							} else {
+								playRandomVideo()
 								if (unit < maxUnits) {
 									playSound();
-
 									setUnit((previous) => previous + 1);
 									setIsTraining(null);
 									setCount(0);
