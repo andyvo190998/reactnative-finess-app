@@ -38,7 +38,7 @@ export default function RegisterPage({ navigation }) {
 			//   .then(console.log);
 			await axios
 				.post(
-					`${"http://192.168.56.1:5000"}/api/users/register/`,
+					`${"https://reactnative-finess-app.vercel.app"}/api/users/register/`,
 					registrationForm
 				)
 				.then(() => {

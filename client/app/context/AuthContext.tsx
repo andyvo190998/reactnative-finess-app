@@ -55,7 +55,7 @@ export const AuthProvider = ({ children }: any) => {
 		password: string;
 	}) => {
 		await axios
-			.post(`${'http://192.168.56.1:5000'}/api/users/login`, loginForm)
+			.post(`${'https://reactnative-finess-app.vercel.app'}/api/users/login`, loginForm)
 			.then(async (res) => {
 				const token = res.data.token;
 				setAuthState({

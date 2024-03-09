@@ -70,7 +70,7 @@ const Subscription = () => {
 
 	const upgradeMembership = async (type) => {
 		await axios
-			.put(`${"http://192.168.56.1:5000"}/api/users/upgrade/`, {
+			.put(`${"https://reactnative-finess-app.vercel.app"}/api/users/upgrade/`, {
 				email: userInfo.email,
 				newMembership: type,
 			})
