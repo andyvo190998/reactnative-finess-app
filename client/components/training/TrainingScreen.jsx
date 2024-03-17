@@ -48,7 +48,7 @@ const styles = StyleSheet.create({
 const TrainingScreen = ({ navigation, route }) => {
 	const trainingLevel = route.params.trainingLevel;
 	const maxUnits = route.params.units;
-	const [exerciseLong, setExerciseLong] = useState(45);
+	const exerciseLong = 45
 	const exerciseBreak = 15;
 	const exerciseUnitBreak = 60;
 	const [count, setCount] = useState(1);
@@ -61,8 +61,9 @@ const TrainingScreen = ({ navigation, route }) => {
 	const [playedVideos, setPlayedVideos] = useState([])
 	const firstPlay = trainingVideos[Math.floor(Math.random() * trainingVideos.length)]
 	const [videoToPlay, setVideoToPlay] = useState(firstPlay)
-
+	const [toggleModal, setToggleModal] = useState(false);
 	const [playedIndex, setPlayedIndex] = useState(firstPlay)
+	const [sound, setSound] = useState();
 
 	const turnToMinute = (second) => {
 		let hours = Math.floor(second / 3600);
@@ -76,11 +77,12 @@ const TrainingScreen = ({ navigation, route }) => {
 
 		return hours + ':' + minutes + ':' + remainingSeconds;
 	};
-	const [sound, setSound] = useState();
+
 	const playSuccessSound = async () => {
 		const { sound } = await Audio.Sound.createAsync(successSource);
 		await sound.playAsync();
 	};
+
 	const playSound = async () => {
 		setIsPlaying(false);
 		const { sound } = await Audio.Sound.createAsync(soundSource);
@@ -93,24 +95,30 @@ const TrainingScreen = ({ navigation, route }) => {
 			}
 		}, 3000);
 	};
-	useEffect(() => {
-		setKey((prevKey) => prevKey + 1);
-		playSound();
-	}, []);
 
-	const [toggleModal, setToggleModal] = useState(false);
-
-	function playRandomVideo() {
-		if (playedVideos.length === trainingVideos.length) {
-		  setPlayedVideos([])
-		}
+	const playRandomVideo = () => {
 		const availableVideos = videoList.slice(0, playedIndex).concat(videoList.slice(playedIndex + 1));
 		setVideoList(availableVideos)
 		const randomIndex = Math.floor(Math.random() * availableVideos.length);
 		setPlayedIndex(randomIndex)
 		const videoToPlay = availableVideos[randomIndex];
 	  	setVideoToPlay(videoToPlay)
-	  }
+		setPlayedVideos(previous => [...previous, videoToPlay])
+	}
+
+	useEffect(() => {
+		if (playedVideos.length === trainingVideos.length) {
+			console.log('here')
+			setPlayedVideos([])
+			setVideoList([...trainingVideos])
+		  }
+	},[playedVideos.length])
+
+	useEffect(() => {
+		setKey((prevKey) => prevKey + 1);
+		playSound();
+		playRandomVideo()
+	}, []);
 
 	return (
 		<View style={styles.container}>
