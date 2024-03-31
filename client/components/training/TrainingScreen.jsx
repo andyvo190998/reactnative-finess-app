@@ -102,7 +102,7 @@ const TrainingScreen = ({ navigation, route }) => {
 		const randomIndex = Math.floor(Math.random() * availableVideos.length);
 		setPlayedIndex(randomIndex)
 		const videoToPlay = availableVideos[randomIndex];
-	  	setVideoToPlay(videoToPlay)
+	  	setVideoToPlay(videoToPlay ?? videoList[Math.floor(Math.random() * videoList.length)])
 		setPlayedVideos(previous => [...previous, videoToPlay])
 	}
 
