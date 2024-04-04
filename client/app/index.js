@@ -19,16 +19,16 @@ import { DrawerActions, NavigationContainer } from '@react-navigation/native';
 import { createDrawerNavigator } from '@react-navigation/drawer';
 import { useState } from 'react';
 LogBox.ignoreLogs(['new NativeEventEmitter']);
-LogBox.ignoreLogs(["VirtualizedLists should never be nested"])
+LogBox.ignoreLogs(["VirtualizedLists should never be nested"]);
 
 const StackNav = ({ navigation }) => {
   const handlePress = () => {
-    navigation.dispatch(DrawerActions.openDrawer())
-  }
+    navigation.dispatch(DrawerActions.openDrawer());
+  };
   const handleNavigateHome = () => {
-    navigation.navigate('Profile')
-  }
-  const [trainingLevel, setTrainingLevel] = useState('Beginner')
+    navigation.navigate('Profile');
+  };
+  const [trainingLevel, setTrainingLevel] = useState('Beginner');
   return (
     <SafeAreaView style={{ flex: 1, backgroundColor: COLORS.lightWhite }}>
       <Stack.Screen
@@ -58,8 +58,8 @@ const StackNav = ({ navigation }) => {
         </View>
       </ScrollView>
     </SafeAreaView>
-  )
-}
+  );
+};
 
 export default function Home() {
   const Drawer = createDrawerNavigator();
@@ -73,21 +73,14 @@ export default function Home() {
         screenOptions={{
           headerShown: false
         }}>
-        {/* {authState.authenticated ? (
-          <> */}
         <Drawer.Screen name="Home" component={StackNav} initialParams={{ itemId: 42 }} />
-        {/* </>
-        ) : (
-          <> */}
         <Drawer.Screen name="Login" component={LoginScreen} />
         <Drawer.Screen name="Register" component={RegisterPage} />
         <Drawer.Screen name="Profile" component={Profile} options={{ headerShown: false }} />
         <Drawer.Screen name="Training" component={TrainingScreen} options={{ headerShown: true }} />
         <Drawer.Screen name="Subscription" component={Subscription} options={{ headerShown: false }} />
-        {/* </>
-        )} */}
         <Drawer.Screen name="StartingPage" component={StartingPage} />
       </Drawer.Navigator>
     </NavigationContainer>
-  )
+  );
 }

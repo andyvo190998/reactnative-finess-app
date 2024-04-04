@@ -13,7 +13,7 @@ import { useNavigation } from "@react-navigation/native";
 import { useAuth } from "@/app/context/AuthContext";
 
 const LoginScreen = () => {
-	const { onLogin, authState, userInfo } = useAuth();
+	const { onLogin, authState } = useAuth();
 	const navigation = useNavigation();
 	const [loginForm, setLoginForm] = useState({
 		email: "",
