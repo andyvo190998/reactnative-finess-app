@@ -30,6 +30,12 @@
     },
     "android": {
       "package": "com.andy_vo.fitness"
+    },
+    "runtimeVersion": {
+      "policy": "appVersion"
+    },
+    "updates": {
+      "url": "https://u.expo.dev/7279cb1f-a406-49cc-b8cc-b2dca8cd1fb9"
     }
   }
 }

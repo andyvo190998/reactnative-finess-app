@@ -9,12 +9,12 @@ import {
 	StyleSheet,
 } from "react-native";
 import { SafeAreaView } from "react-native-safe-area-context";
-import { useNavigation } from "@react-navigation/native";
+// import { useNavigation } from "@react-navigation/native";
 import { useAuth } from "@/app/context/AuthContext";
 
-const LoginScreen = () => {
+const LoginScreen = ({ navigation }) => {
 	const { onLogin, authState } = useAuth();
-	const navigation = useNavigation();
+	// const navigation = useNavigation();
 	const [loginForm, setLoginForm] = useState({
 		email: "",
 		password: "",
@@ -39,14 +39,6 @@ const LoginScreen = () => {
 	return (
 		<View style={{ flex: 1, backgroundColor: "#877dfa" }}>
 			<SafeAreaView style={{ flex: 1 }}>
-				{/* <View style={styles.safeViewContainer}>
-          <TouchableOpacity
-            onPress={() => navigation.navigate('Home')}
-            style={styles.backBtn}
-          >
-            <ArrowLeftIcon size={20} color="black" />
-          </TouchableOpacity>
-        </View> */}
 				<View
 					style={{
 						flexDirection: "row",

@@ -7,16 +7,12 @@ import {
 	Alert,
 } from "react-native";
 import React, { useState } from "react";
-// import { themeColors } from '../theme'
 import { SafeAreaView } from "react-native-safe-area-context";
 import { ArrowLeftIcon } from "react-native-heroicons/solid";
-import { useNavigation } from "@react-navigation/native";
 import axios from "axios";
 
 // subscribe for more videos like this :)
 export default function RegisterPage({ navigation }) {
-	// const navigation = useNavigation();
-
 	const [registrationForm, setRegistrationForm] = useState({
 		name: "",
 		email: "",
@@ -33,9 +29,6 @@ export default function RegisterPage({ navigation }) {
 	const handleRegistration = async () => {
 		const checkValidInput = isFormValid();
 		if (checkValidInput === true) {
-			// fetch('https://dummyjson.com/todos')
-			//   .then((res) => res.json())
-			//   .then(console.log);
 			await axios
 				.post(
 					`${"https://reactnative-finess-app.vercel.app"}/api/users/register/`,

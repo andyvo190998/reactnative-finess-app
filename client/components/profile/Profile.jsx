@@ -8,7 +8,7 @@ import {
 	ImageBackground,
 } from 'react-native';
 import React from 'react';
-import { Link, router, useNavigation } from 'expo-router';
+import { useNavigation } from 'expo-router';
 import { useAuth } from '@/app/context/AuthContext';
 import Icon from 'react-native-vector-icons/MaterialCommunityIcons';
 import Icon1 from 'react-native-vector-icons/Foundation';
@@ -36,7 +36,6 @@ const workOutCard = ({ item }) => {
 				source={item.img}
 				resizeMode='cover'
 				imageStyle={{ borderRadius: 14 }}
-				// className="h-full border rounded-lg"
 			>
 				<View className=' h-full flex justify-end pl-5 border-2 border-neutral-300 rounded-2xl pb-2'>
 					<Text className='color-slate-200 font-semibold'>
@@ -84,10 +83,8 @@ const PostCards = ({ item }) => {
 				</TouchableOpacity>
 			</View>
 			<Text className='flex-1'>{item.desc}</Text>
-			{/* </View> */}
 			<View className='flex-1 mb-1'>
 				<Image
-					// resizeMode="con"
 					source={item.img}
 					style={{
 						width: '100%',
@@ -139,7 +136,7 @@ const PostCards = ({ item }) => {
 };
 const Profile = () => {
 	const navigation = useNavigation();
-	const { authState, userInfo } = useAuth();
+	const { userInfo } = useAuth();
 	function TimeConverter(UNIX_timestamp) {
 		var a = new Date(UNIX_timestamp);
 		var months = [

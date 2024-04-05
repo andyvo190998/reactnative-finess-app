@@ -27,7 +27,6 @@ const TrainingList = ({ navigation, trainingLevel }) => {
 		},
 	];
 
-	// const navigation = useNavigation();
 	return (
 		<View className='mt-2 flex flex-col'>
 			{dummyData.map((item) => {
