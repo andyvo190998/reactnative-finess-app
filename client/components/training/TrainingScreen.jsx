@@ -8,12 +8,13 @@ import {
 import React, { useEffect, useState } from 'react';
 import { Audio, Video } from 'expo-av';
 import Icon from 'react-native-vector-icons/MaterialCommunityIcons';
-import { CountdownCircleTimer } from 'react-native-countdown-circle-timer';
+// import { CountdownCircleTimer } from 'react-native-countdown-circle-timer';
 const soundSource = require('../../assets/sounds/count-down-tick.mp3');
 const successSource = require('../../assets/sounds/success.mp3');
 import Modal from 'react-native-modal';
 import { images } from '@/constants';
 import { trainingVideos } from '@/assets/works';
+import CountDown from 'react-native-countdown-component';
 
 const styles = StyleSheet.create({
 	container: {
@@ -120,6 +121,8 @@ const TrainingScreen = ({ navigation, route }) => {
 		playRandomVideo()
 	}, []);
 
+	const [test, setTest] = useState(10)
+
 	return (
 		<View style={styles.container}>
 			<Video
@@ -149,7 +152,7 @@ const TrainingScreen = ({ navigation, route }) => {
 						</Text>
 					</Text>
 				</View>
-				<CountdownCircleTimer
+				{/* <CountdownCircleTimer
 					key={key}
 					isPlaying={isPlaying}
 					duration={
@@ -225,7 +228,18 @@ const TrainingScreen = ({ navigation, route }) => {
 							{turnToMinute(remainingTime)}
 						</Text>
 					)}
-				</CountdownCircleTimer>
+				</CountdownCircleTimer> */}
+				<CountDown
+					until={test}
+					size={40}
+					onFinish={() => setTest(test + 10)}
+					digitStyle={{backgroundColor: '#FFF'}}
+					digitTxtStyle={{color: '#1CC625'}}
+					timeToShow={['M', 'S']}
+					timeLabels={{m: '', s: ''}}
+					// running={}
+				/>
+
 				<Text className='text-2xl font-semibold'>
 					{isTraining ? 'TRAINING TIME' : 'RESTING TIME'}
 				</Text>

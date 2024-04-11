@@ -23,19 +23,19 @@
       ],
       "expo-router"
     ],
-    "extra": {
-      "eas": {
-        "projectId": "7279cb1f-a406-49cc-b8cc-b2dca8cd1fb9"
-      }
-    },
-    "android": {
-      "package": "com.andy_vo.fitness"
-    },
     "runtimeVersion": {
       "policy": "appVersion"
     },
-    "updates": {
-      "url": "https://u.expo.dev/7279cb1f-a406-49cc-b8cc-b2dca8cd1fb9"
+    "android": {
+      "package": "com.andy123321.fitness"
+    },
+    "extra": {
+      "router": {
+        "origin": false
+      },
+      "eas": {
+        "projectId": "120a655b-4ca0-4c69-8439-d9da12b3a731"
+      }
     }
   }
 }

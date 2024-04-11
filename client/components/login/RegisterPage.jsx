@@ -85,7 +85,7 @@ export default function RegisterPage({ navigation }) {
 			style={{ backgroundColor: "#877dfa" }}
 		>
 			<SafeAreaView className='flex flex-1'>
-				<View className='flex-row absolute justify-start'>
+				{/* <View className='flex-row absolute justify-start'>
 					<TouchableOpacity
 						onPress={() => navigation.goBack()}
 						style={{
@@ -102,7 +102,7 @@ export default function RegisterPage({ navigation }) {
 					>
 						<ArrowLeftIcon size='20' color='black' />
 					</TouchableOpacity>
-				</View>
+				</View> */}
 				<View
 					style={{
 						flexDirection: "row",

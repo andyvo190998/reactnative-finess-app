@@ -19,7 +19,8 @@ export const addUser = async (req, res) => {
 };
 
 export const login = async (req, res) => {
-    re;
+    // re;
+    console.log('here');
     const user = await User.findOne({
         email: req.body.email
     });
