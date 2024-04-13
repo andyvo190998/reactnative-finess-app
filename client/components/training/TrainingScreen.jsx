@@ -15,6 +15,7 @@ import Modal from 'react-native-modal';
 import { images } from '@/constants';
 import { trainingVideos } from '@/assets/works';
 import CountDown from 'react-native-countdown-component';
+import CountdownTimerComponent from './CountdownTimerComponent'
 
 const styles = StyleSheet.create({
 	container: {
@@ -85,31 +86,30 @@ const TrainingScreen = ({ navigation, route }) => {
 	};
 
 	const playSound = async () => {
-		setIsPlaying(false);
+		// setIsPlaying(false);
 		const { sound } = await Audio.Sound.createAsync(soundSource);
 		setSound(sound);
 
 		await sound.playAsync();
-		setTimeout(() => {
-			if (unit <= maxUnits) {
-				setIsPlaying(true);
-			}
-		}, 3000);
+		// setTimeout(() => {
+		// 	if (unit <= maxUnits) {
+		// 		setIsPlaying(true);
+		// 	}
+		// }, 3000);
 	};
 
-	const playRandomVideo = () => {
+	const playRandomVideo = async () => {
 		const availableVideos = videoList.slice(0, playedIndex).concat(videoList.slice(playedIndex + 1));
-		setVideoList(availableVideos)
+		setTimeout(() => setVideoList(availableVideos), 0)
 		const randomIndex = Math.floor(Math.random() * availableVideos.length);
-		setPlayedIndex(randomIndex)
+		setTimeout(() => setPlayedIndex(randomIndex), 0)
 		const videoToPlay = availableVideos[randomIndex];
-	  	setVideoToPlay(videoToPlay ?? videoList[Math.floor(Math.random() * videoList.length)])
-		setPlayedVideos(previous => [...previous, videoToPlay])
+		setTimeout(() => setVideoToPlay(videoToPlay ?? videoList[Math.floor(Math.random() * videoList.length)]), 0)
+		setTimeout(() => setPlayedVideos(previous => [...previous, videoToPlay]), 0)
 	}
 
 	useEffect(() => {
 		if (playedVideos.length === trainingVideos.length) {
-			console.log('here')
 			setPlayedVideos([])
 			setVideoList([...trainingVideos])
 		  }
@@ -117,12 +117,44 @@ const TrainingScreen = ({ navigation, route }) => {
 
 	useEffect(() => {
 		setKey((prevKey) => prevKey + 1);
-		playSound();
 		playRandomVideo()
 	}, []);
 
-	const [test, setTest] = useState(10)
+	const [time, setTime] = useState(45)
+	const [mode, setMode] = useState("Training")
+	const [isPaused, setIsPaused] = useState(false)
 
+	const handleOnfinish = async () => {
+		if (count >= 5){
+			if (unit < maxUnits) {
+				await playRandomVideo()
+				setTimeout(() => setUnit(previous => previous + 1), 0)
+				setTimeout(() => setCount(1), 0)
+				setTimeout(() => setMode("Rest"), 0)
+				setTimeout(() => setTime(60), 0)
+			} else {
+				await handleComplete()
+			}
+			return
+		}
+		if (mode === "Training") {
+			await playRandomVideo()
+			setTimeout(() => setMode("Rest"), 0)
+			setTimeout(() => setTime(15), 0)
+		} else if (mode === "Rest") {
+			setTimeout(() => setCount(previous => previous + 1), 0)
+			setTimeout(() => setMode("Training"), 0)
+			setTimeout(() => setTime(45), 0)
+		}
+	}
+
+	const handleComplete = async () => {
+		await playSuccessSound();
+		setToggleModal(true);
+		setIsPaused(true)
+		setUnit(1)
+		setCount(1)
+	}
 	return (
 		<View style={styles.container}>
 			<Video
@@ -229,57 +261,45 @@ const TrainingScreen = ({ navigation, route }) => {
 						</Text>
 					)}
 				</CountdownCircleTimer> */}
-				<CountDown
-					until={test}
-					size={40}
-					onFinish={() => setTest(test + 10)}
-					digitStyle={{backgroundColor: '#FFF'}}
-					digitTxtStyle={{color: '#1CC625'}}
-					timeToShow={['M', 'S']}
-					timeLabels={{m: '', s: ''}}
-					// running={}
+				 <CountdownTimerComponent
+				 	durationInSeconds={time}
+					isPaused={isPaused}
+					onFinish={async (e) => {await handleOnfinish()}}
+					onChange={async (e) => {
+						if (e === 4) {
+							await playSound()
+						}
+					}}
 				/>
 
 				<Text className='text-2xl font-semibold'>
-					{isTraining ? 'TRAINING TIME' : 'RESTING TIME'}
+					{mode}
 				</Text>
 				<View className='flex flex-row items-center justify-center gap-2 w-full'>
 					<TouchableOpacity
 						onPress={() => {
-							setIsTraining(true);
-							// setExerciseLong(45);
-							setUnit(1);
-							setCount(1);
-							setKey((prevKey) => prevKey + 1);
+							setTime(20)
 						}}
 						style={styles.funcBtn}
 					>
 						<Text style={styles.text}>RESET</Text>
 					</TouchableOpacity>
-					<TouchableOpacity onPress={() => setIsPlaying(!isPlaying)}>
+					<TouchableOpacity onPress={() => setIsPaused(!isPaused)}>
 						<Icon
-							name={isPlaying ? 'pause' : 'play'}
+							name={isPaused ? 'play' : 'pause'}
 							size={80}
 							color={'#ff9a00'}
 						/>
 					</TouchableOpacity>
 					<TouchableOpacity
-						onPress={() => {
-							if (!isTraining) {
-								setKey((prevKey) => prevKey + 1);
-								return;
-							}
-							if (count < 5) {
-								setCount((previous) => previous + 1);
-							} else {
-								setCount(0);
-								setUnit((previous) => previous + 1);
-							}
-							setIsTraining(false);
-
-							setKey((prevKey) => prevKey + 1);
-						}}
 						style={styles.funcBtn}
+						onPress={() => {
+							setUnit(1)
+							setCount(1)
+							setIsPaused(true)
+							setMode("Training")
+							setTime(45)
+						}}
 					>
 						<Text style={styles.text}>REST</Text>
 					</TouchableOpacity>
