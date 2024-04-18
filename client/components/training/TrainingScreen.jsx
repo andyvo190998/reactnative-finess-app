@@ -4,9 +4,10 @@ import {
 	StyleSheet,
 	TouchableOpacity,
 	Image,
+	Platform,
 } from 'react-native';
 import React, { useEffect, useState } from 'react';
-import { Audio, Video } from 'expo-av';
+import { Audio, Video, VideoFullscreenUpdate } from 'expo-av';
 import Icon from 'react-native-vector-icons/MaterialCommunityIcons';
 // import { CountdownCircleTimer } from 'react-native-countdown-circle-timer';
 const soundSource = require('../../assets/sounds/count-down-tick.mp3');
@@ -16,7 +17,7 @@ import { images } from '@/constants';
 import { trainingVideos } from '@/assets/works';
 import CountDown from 'react-native-countdown-component';
 import CountdownTimerComponent from './CountdownTimerComponent'
-
+import * as ScreenOrientation from "expo-screen-orientation";
 const styles = StyleSheet.create({
 	container: {
 		flex: 1,
@@ -155,18 +156,48 @@ const TrainingScreen = ({ navigation, route }) => {
 		setUnit(1)
 		setCount(1)
 	}
+
+	 // For Android, we need to unlock the screen to make the fullscreen feature work
+	 const onFullscreenUpdate = async ({ fullscreenUpdate }) => {
+
+		if (Platform.OS === "android") {
+		  if (fullscreenUpdate === VideoFullscreenUpdate.PLAYER_DID_PRESENT) {
+			await ScreenOrientation.unlockAsync();
+		  } else if (fullscreenUpdate === VideoFullscreenUpdate.PLAYER_WILL_DISMISS) {
+			// lock the screen in Portrait orientation
+			await ScreenOrientation.lockAsync(
+			  ScreenOrientation.OrientationLock.LANDSCAPE
+			);
+		  }
+		}
+	  };
+
+	  const [orientationIsLandscape, setOrientationIsLandscape] = useState(false);
+
 	return (
 		<View style={styles.container}>
 			<Video
 				ref={video}
 				style={styles.video}
 				source={videoToPlay}
-				useNativeControls
 				resizeMode='cover'
+				onLoad={()=>{video?.current?.presentFullscreenPlayer()}}
+				// onFullscreenUpdate={onFullscreenUpdate1}
+				useNativeControls={true}
 				// resizeMode={ResizeMode.CONTAIN}
 				isLooping
 				shouldPlay
-				// onPlaybackStatusUpdate={setStatus}
+
+				onFullscreenUpdate={async ({ fullscreenUpdate }) => {
+					if (fullscreenUpdate === VideoFullscreenUpdate.PLAYER_DID_DISMISS) {
+						await ScreenOrientation.lockAsync(ScreenOrientation.OrientationLock.PORTRAIT);
+						return
+					}
+					await ScreenOrientation.lockAsync(
+					  orientationIsLandscape ? ScreenOrientation.OrientationLock.PORTRAIT :
+					  ScreenOrientation.OrientationLock.LANDSCAPE_LEFT,
+				  );
+				}}
 			/>
 			<View
 				style={styles.control}
@@ -278,7 +309,11 @@ const TrainingScreen = ({ navigation, route }) => {
 				<View className='flex flex-row items-center justify-center gap-2 w-full'>
 					<TouchableOpacity
 						onPress={() => {
-							setTime(20)
+							setUnit(1)
+							setCount(1)
+							setIsPaused(true)
+							setMode("Training")
+							setTime(45)
 						}}
 						style={styles.funcBtn}
 					>
@@ -293,13 +328,13 @@ const TrainingScreen = ({ navigation, route }) => {
 					</TouchableOpacity>
 					<TouchableOpacity
 						style={styles.funcBtn}
-						onPress={() => {
-							setUnit(1)
-							setCount(1)
-							setIsPaused(true)
-							setMode("Training")
-							setTime(45)
-						}}
+						// onPress={() => {
+						// 	setUnit(1)
+						// 	setCount(1)
+						// 	setIsPaused(true)
+						// 	setMode("Training")
+						// 	setTime(45)
+						// }}
 					>
 						<Text style={styles.text}>REST</Text>
 					</TouchableOpacity>
