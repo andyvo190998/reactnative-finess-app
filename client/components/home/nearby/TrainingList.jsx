@@ -1,6 +1,7 @@
 import React from "react";
 import { View, Text, ImageBackground, TouchableOpacity } from "react-native";
 import Icon from "react-native-vector-icons/MaterialCommunityIcons";
+import * as ScreenOrientation from "expo-screen-orientation";
 
 const TrainingList = ({ navigation, trainingLevel }) => {
 	const dummyData = [
@@ -34,12 +35,13 @@ const TrainingList = ({ navigation, trainingLevel }) => {
 					return (
 						<View key={item.id} className='mt-2 rounded-sm'>
 							<TouchableOpacity
-								onPress={() =>
+								onPress={() => {
 									navigation.navigate("Training", {
 										trainingLevel: item.trainingLevel,
 										units: item.units,
 									})
-								}
+									ScreenOrientation.lockAsync(ScreenOrientation.OrientationLock.LANDSCAPE);
+								}}
 							>
 								<ImageBackground
 									imageStyle={{ borderRadius: 5 }}

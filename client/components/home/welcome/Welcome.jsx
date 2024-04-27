@@ -32,7 +32,7 @@ const Welcome = ({ setTrainingLevel }) => {
 					Find your perfect course
 				</Text>
 			</View>
-			<View style={styles.searchContainer}>
+			{/* <View style={styles.searchContainer}>
 				<View style={styles.searchWrapper}>
 					<TextInput
 						value=''
@@ -47,7 +47,7 @@ const Welcome = ({ setTrainingLevel }) => {
 						style={styles.searchBtnImage}
 					/>
 				</TouchableOpacity>
-			</View>
+			</View> */}
 
 			<View style={styles.tabsContainer}>
 				<FlatList

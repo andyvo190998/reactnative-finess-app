@@ -5,7 +5,9 @@ const CountdownTimerComponent = ({
   durationInSeconds,
   isPaused = false,
   onFinish,
-  onChange
+  onChange,
+  onReset,
+  setOnReset
 }) => {
   const [secondsRemaining, setSecondsRemaining] = useState(durationInSeconds);
   const [minutes, setMinutes] = useState(Math.floor(durationInSeconds / 60));
@@ -48,13 +50,23 @@ const CountdownTimerComponent = ({
     return () => clearInterval(interval);
   }, [isPaused, durationInSeconds, secondsRemaining]);
 
+  useEffect(() => {
+    console.log(onReset, secondsRemaining)
+    if (onReset === true) {
+      setSecondsRemaining(durationInSeconds);
+      setMinutes(Math.floor(durationInSeconds / 60));
+      setSeconds(durationInSeconds % 60);
+      setOnReset(false)
+    }
+  }, [onReset])
+
   return (
     <View className="flex flex-row gap-1">
-      <View className="bg-white h-24 w-24 flex justify-center items-center rounded-lg">
-        <Text className="font-bold text-4xl text-[#1CC625]">{minuteFunc()}</Text>
+      <View className="bg-white h-14 w-14 flex justify-center items-center rounded-lg">
+        <Text className="font-bold text-2xl text-[#1CC625]">{minuteFunc()}</Text>
       </View>
-      <View className="bg-white h-24 w-24 flex justify-center items-center rounded-lg">
-        <Text className="font-bold text-4xl text-[#1CC625]">{secondFunc()}</Text>
+      <View className="bg-white h-14 w-14 flex justify-center items-center rounded-lg">
+        <Text className="font-bold text-2xl text-[#1CC625]">{secondFunc()}</Text>
       </View>
     </View>
   );

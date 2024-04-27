@@ -4,18 +4,17 @@ import {
 	StyleSheet,
 	TouchableOpacity,
 	Image,
-	Platform,
+	Dimensions,
+	BackHandler,
 } from 'react-native';
-import React, { useEffect, useState } from 'react';
-import { Audio, Video, VideoFullscreenUpdate } from 'expo-av';
+import React, { useEffect, useRef, useState } from 'react';
+import { Audio, ResizeMode, Video } from 'expo-av';
 import Icon from 'react-native-vector-icons/MaterialCommunityIcons';
-// import { CountdownCircleTimer } from 'react-native-countdown-circle-timer';
 const soundSource = require('../../assets/sounds/count-down-tick.mp3');
 const successSource = require('../../assets/sounds/success.mp3');
 import Modal from 'react-native-modal';
 import { images } from '@/constants';
 import { trainingVideos } from '@/assets/works';
-import CountDown from 'react-native-countdown-component';
 import CountdownTimerComponent from './CountdownTimerComponent'
 import * as ScreenOrientation from "expo-screen-orientation";
 const styles = StyleSheet.create({
@@ -24,19 +23,19 @@ const styles = StyleSheet.create({
 		height: '100%',
 		alignItems: 'flex-start',
 		justifyContent: 'flex-start',
+		position: 'relative'
 	},
 	funcBtn: {
 		borderWidth: 1,
 		borderRadius: 5,
-		paddingHorizontal: 30,
+		paddingHorizontal: 20,
 		paddingVertical: 10,
 	},
 	text: {
 		fontWeight: '600',
 	},
 	video: {
-		flex: 0.5,
-		alignSelf: 'stretch',
+		flex: 1,
 	},
 	control: {
 		flex: 1.5,
@@ -49,37 +48,26 @@ const styles = StyleSheet.create({
 	},
 });
 const TrainingScreen = ({ navigation, route }) => {
-	const trainingLevel = route.params.trainingLevel;
 	const maxUnits = route.params.units;
-	const exerciseLong = 45
-	const exerciseBreak = 15;
-	const exerciseUnitBreak = 60;
+	const firstPlay = trainingVideos[Math.floor(Math.random() * trainingVideos.length)]
+	const trainingLevel = route.params.trainingLevel;
+	const [isTraining, setIsTraining] = useState(true);
+	const [isPlaying, setIsPlaying] = useState(false);
 	const [count, setCount] = useState(1);
 	const [unit, setUnit] = useState(1);
-	const [isTraining, setIsTraining] = useState(true);
-	const video = React.useRef(null);
-	const [isPlaying, setIsPlaying] = useState(false);
-	const [key, setKey] = useState(0);
 	const [videoList, setVideoList] = useState([...trainingVideos])
 	const [playedVideos, setPlayedVideos] = useState([])
-	const firstPlay = trainingVideos[Math.floor(Math.random() * trainingVideos.length)]
 	const [videoToPlay, setVideoToPlay] = useState(firstPlay)
 	const [toggleModal, setToggleModal] = useState(false);
 	const [playedIndex, setPlayedIndex] = useState(firstPlay)
-	const [sound, setSound] = useState();
+	const [shouldPlay, setShouldPlay] = useState(true)
+	const [dimensions, setDimensions] = useState(Dimensions.get('window'));
+	const [time, setTime] = useState(45)
+	const [mode, setMode] = useState("Training")
+	const [isPaused, setIsPaused] = useState(false)
+	const [onReset, setOnReset] = useState(false)
 
-	const turnToMinute = (second) => {
-		let hours = Math.floor(second / 3600);
-		let minutes = Math.floor((second % 3600) / 60);
-		let remainingSeconds = second % 60;
-
-		hours = hours < 10 ? '0' + hours : hours;
-		minutes = minutes < 10 ? '0' + minutes : minutes;
-		remainingSeconds =
-			remainingSeconds < 10 ? '0' + remainingSeconds : remainingSeconds;
-
-		return hours + ':' + minutes + ':' + remainingSeconds;
-	};
+	const video = useRef(null);
 
 	const playSuccessSound = async () => {
 		const { sound } = await Audio.Sound.createAsync(successSource);
@@ -87,16 +75,9 @@ const TrainingScreen = ({ navigation, route }) => {
 	};
 
 	const playSound = async () => {
-		// setIsPlaying(false);
 		const { sound } = await Audio.Sound.createAsync(soundSource);
-		setSound(sound);
 
 		await sound.playAsync();
-		// setTimeout(() => {
-		// 	if (unit <= maxUnits) {
-		// 		setIsPlaying(true);
-		// 	}
-		// }, 3000);
 	};
 
 	const playRandomVideo = async () => {
@@ -108,22 +89,6 @@ const TrainingScreen = ({ navigation, route }) => {
 		setTimeout(() => setVideoToPlay(videoToPlay ?? videoList[Math.floor(Math.random() * videoList.length)]), 0)
 		setTimeout(() => setPlayedVideos(previous => [...previous, videoToPlay]), 0)
 	}
-
-	useEffect(() => {
-		if (playedVideos.length === trainingVideos.length) {
-			setPlayedVideos([])
-			setVideoList([...trainingVideos])
-		  }
-	},[playedVideos.length])
-
-	useEffect(() => {
-		setKey((prevKey) => prevKey + 1);
-		playRandomVideo()
-	}, []);
-
-	const [time, setTime] = useState(45)
-	const [mode, setMode] = useState("Training")
-	const [isPaused, setIsPaused] = useState(false)
 
 	const handleOnfinish = async () => {
 		if (count >= 5){
@@ -157,51 +122,65 @@ const TrainingScreen = ({ navigation, route }) => {
 		setCount(1)
 	}
 
-	 // For Android, we need to unlock the screen to make the fullscreen feature work
-	 const onFullscreenUpdate = async ({ fullscreenUpdate }) => {
+	const handleBackButtonClick = () => {
+		ScreenOrientation.lockAsync(ScreenOrientation.OrientationLock.PORTRAIT);
+		navigation.goBack();
+		setShouldPlay(false)
+		setIsPaused(true)
+		return true;
+	}
 
-		if (Platform.OS === "android") {
-		  if (fullscreenUpdate === VideoFullscreenUpdate.PLAYER_DID_PRESENT) {
-			await ScreenOrientation.unlockAsync();
-		  } else if (fullscreenUpdate === VideoFullscreenUpdate.PLAYER_WILL_DISMISS) {
-			// lock the screen in Portrait orientation
-			await ScreenOrientation.lockAsync(
-			  ScreenOrientation.OrientationLock.LANDSCAPE
-			);
-		  }
+
+	useEffect(() => {
+		if (playedVideos.length === trainingVideos.length) {
+			setPlayedVideos([])
+			setVideoList([...trainingVideos])
 		}
-	  };
+	},[playedVideos.length])
 
-	  const [orientationIsLandscape, setOrientationIsLandscape] = useState(false);
+	useEffect(() => {
+		const updateDimensions = () => {
+			setDimensions(Dimensions.get('window'));
+		};
+		Dimensions.addEventListener('change', updateDimensions);
+		playRandomVideo()
+	}, []);
 
+	useEffect(() => {
+		BackHandler.addEventListener("hardwareBackPress", handleBackButtonClick);
+		return () => {
+			BackHandler.removeEventListener("hardwareBackPress", handleBackButtonClick);
+		};
+	}, []);
+
+	useEffect(() => {
+		setShouldPlay(true)
+		setIsPaused(false)
+	}, [route])
 	return (
 		<View style={styles.container}>
 			<Video
 				ref={video}
-				style={styles.video}
+				style={{...styles.video, width: dimensions.width, height: dimensions.height}}
 				source={videoToPlay}
-				resizeMode='cover'
-				onLoad={()=>{video?.current?.presentFullscreenPlayer()}}
-				// onFullscreenUpdate={onFullscreenUpdate1}
-				useNativeControls={true}
-				// resizeMode={ResizeMode.CONTAIN}
+				useNativeControls={false}
+				resizeMode={ResizeMode.COVER}
 				isLooping
-				shouldPlay
-
-				onFullscreenUpdate={async ({ fullscreenUpdate }) => {
-					if (fullscreenUpdate === VideoFullscreenUpdate.PLAYER_DID_DISMISS) {
-						await ScreenOrientation.lockAsync(ScreenOrientation.OrientationLock.PORTRAIT);
-						return
-					}
-					await ScreenOrientation.lockAsync(
-					  orientationIsLandscape ? ScreenOrientation.OrientationLock.PORTRAIT :
-					  ScreenOrientation.OrientationLock.LANDSCAPE_LEFT,
-				  );
-				}}
+				shouldPlay={shouldPlay}
+				// onLoad={()=>{video?.current?.presentFullscreenPlayer()}}
+				// onFullscreenUpdate={async ({ fullscreenUpdate }) => {
+				// 	if (fullscreenUpdate === VideoFullscreenUpdate.PLAYER_DID_DISMISS) {
+				// 		await ScreenOrientation.lockAsync(ScreenOrientation.OrientationLock.PORTRAIT);
+				// 		return
+				// 	}
+				// 	await ScreenOrientation.lockAsync(
+				// 	  orientationIsLandscape ? ScreenOrientation.OrientationLock.PORTRAIT :
+				// 	  ScreenOrientation.OrientationLock.LANDSCAPE_LEFT,
+				//   );
+				// }}
 			/>
 			<View
-				style={styles.control}
-				className='h-ful'
+				className='absolute flex flex-col justify-center items-center top-5 left-3'
 			>
 				<View className='flex flex-row gap-5'>
 					<Text className='text-lg'>
@@ -215,83 +194,6 @@ const TrainingScreen = ({ navigation, route }) => {
 						</Text>
 					</Text>
 				</View>
-				{/* <CountdownCircleTimer
-					key={key}
-					isPlaying={isPlaying}
-					duration={
-						isTraining === null
-							? exerciseUnitBreak
-							: isTraining === true
-							? exerciseLong
-							: exerciseBreak
-					}
-					colors={
-						isTraining
-							? ['#004777', '#F7B801', '#A30000', '#A30000']
-							: ['#A30000', '#F7B801', '#004777', '#A30000']
-					}
-					colorsTime={[
-						exerciseLong,
-						exerciseLong / 2,
-						exerciseLong / 2,
-						0,
-					]}
-					size={250}
-					strokeWidth={20}
-					onUpdate={(remainingTime) => {
-						if (remainingTime === 0) {
-							if (count < 5 && count !== 0) {
-								playSound();
-								if (isTraining === false) {
-									setCount((previous) => previous + 1);
-								} else {
-									playRandomVideo()
-								}
-								setIsTraining(!isTraining);
-								setKey((prevKey) => prevKey + 1);
-							} else if (count === 0) {
-								playSound();
-								setCount((previous) => previous + 1);
-								// setIsPlaying(true);
-								setIsTraining(true);
-								setKey((prevKey) => prevKey + 1);
-							} else {
-								playRandomVideo()
-								if (unit < maxUnits) {
-									playSound();
-									setUnit((previous) => previous + 1);
-									setIsTraining(null);
-									setCount(0);
-									setKey((prevKey) => prevKey + 1);
-								} else {
-									playSuccessSound();
-									setIsPlaying(false);
-									setToggleModal(true);
-
-									setIsTraining(true);
-									// setExerciseLong(45);
-									setUnit(1);
-									setCount(1);
-									setKey((prevKey) => prevKey + 1);
-
-									return;
-								}
-							}
-						}
-					}}
-					onComplete={() => {
-						return {
-							shouldRepeat: isPlaying && unit < maxUnits,
-							delay: 0,
-						};
-					}}
-				>
-					{({ remainingTime }) => (
-						<Text className='text-4xl font-semibold'>
-							{turnToMinute(remainingTime)}
-						</Text>
-					)}
-				</CountdownCircleTimer> */}
 				 <CountdownTimerComponent
 				 	durationInSeconds={time}
 					isPaused={isPaused}
@@ -301,12 +203,14 @@ const TrainingScreen = ({ navigation, route }) => {
 							await playSound()
 						}
 					}}
+					onReset={onReset}
+					setOnReset={setOnReset}
 				/>
 
 				<Text className='text-2xl font-semibold'>
 					{mode}
 				</Text>
-				<View className='flex flex-row items-center justify-center gap-2 w-full'>
+				<View className='flex flex-row items-center justify-center gap-1 z-10'>
 					<TouchableOpacity
 						onPress={() => {
 							setUnit(1)
@@ -314,6 +218,7 @@ const TrainingScreen = ({ navigation, route }) => {
 							setIsPaused(true)
 							setMode("Training")
 							setTime(45)
+							setOnReset(true)
 						}}
 						style={styles.funcBtn}
 					>
@@ -328,13 +233,10 @@ const TrainingScreen = ({ navigation, route }) => {
 					</TouchableOpacity>
 					<TouchableOpacity
 						style={styles.funcBtn}
-						// onPress={() => {
-						// 	setUnit(1)
-						// 	setCount(1)
-						// 	setIsPaused(true)
-						// 	setMode("Training")
-						// 	setTime(45)
-						// }}
+						onPress={() => {
+							setMode("Rest")
+							setTime(15)
+						}}
 					>
 						<Text style={styles.text}>REST</Text>
 					</TouchableOpacity>

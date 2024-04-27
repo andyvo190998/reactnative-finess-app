@@ -17,9 +17,11 @@ import {
 } from '../components';
 import { DrawerActions, NavigationContainer } from '@react-navigation/native';
 import { createDrawerNavigator } from '@react-navigation/drawer';
-import { useState } from 'react';
+import { useEffect, useState } from 'react';
 LogBox.ignoreLogs(['new NativeEventEmitter']);
 LogBox.ignoreLogs(["VirtualizedLists should never be nested"]);
+import * as ScreenOrientation from "expo-screen-orientation";
+
 
 const StackNav = ({ navigation }) => {
   const handlePress = () => {
@@ -63,9 +65,10 @@ const StackNav = ({ navigation }) => {
 
 export default function Home() {
   const Drawer = createDrawerNavigator();
-
+  useEffect(() => {
+    ScreenOrientation.lockAsync(ScreenOrientation.OrientationLock.PORTRAIT);
+  }, []);
   return (
-    // <StackNav />
     <NavigationContainer independent={true}>
       <Drawer.Navigator
         initialRouteName='StartingPage'
@@ -77,7 +80,7 @@ export default function Home() {
         <Drawer.Screen name="Login" component={LoginScreen} />
         <Drawer.Screen name="Register" component={RegisterPage} />
         <Drawer.Screen name="Profile" component={Profile} options={{ headerShown: false }} />
-        <Drawer.Screen name="Training" component={TrainingScreen} options={{ headerShown: true }} />
+        <Drawer.Screen name="Training" component={TrainingScreen} options={{ headerShown: false }} />
         <Drawer.Screen name="Subscription" component={Subscription} options={{ headerShown: false }} />
         <Drawer.Screen name="StartingPage" component={StartingPage} />
       </Drawer.Navigator>
