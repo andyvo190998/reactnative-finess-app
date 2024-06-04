@@ -7,13 +7,18 @@ import {
 	Image,
 	TextInput,
 	StyleSheet,
+	ActivityIndicator
 } from "react-native";
 import { SafeAreaView } from "react-native-safe-area-context";
 // import { useNavigation } from "@react-navigation/native";
 import { useAuth } from "@/app/context/AuthContext";
+import Modal from 'react-native-modal';
 
 const LoginScreen = ({ navigation }) => {
 	const { onLogin, authState } = useAuth();
+	const [toggleModal, setToggleModal] = useState(false);
+	const [login, setLogin] = useState(false)
+
 	// const navigation = useNavigation();
 	const [loginForm, setLoginForm] = useState({
 		email: "",
@@ -32,6 +37,7 @@ const LoginScreen = ({ navigation }) => {
 				email: "",
 				password: "",
 			});
+			setToggleModal(false)
 			navigation.navigate("Home");
 		}
 	}, [authState]);
@@ -102,7 +108,9 @@ const LoginScreen = ({ navigation }) => {
 				</TouchableOpacity>
 				<TouchableOpacity
 					onPress={async () => {
+						setToggleModal(true)
 						await onLogin(loginForm);
+						// setLogin(true)
 					}}
 					style={styles.loginBtn}
 				>
@@ -150,6 +158,28 @@ const LoginScreen = ({ navigation }) => {
 					</TouchableOpacity>
 				</View>
 			</View>
+			<Modal
+				isVisible={toggleModal}
+				// onBackdropPress={() => setToggleModal(false)}
+			>
+				<TouchableOpacity onPress={() => setToggleModal(false)}>
+					<View className='flex justify-center items-center'>
+						{/* <Text
+							className='text-slate-300 text-2xl'
+							style={{ fontFamily: 'DMBold' }}
+						>
+							Congratulation!
+						</Text>
+						<Text
+							className='text-slate-300 text-lg'
+							style={{ fontFamily: 'DMBold' }}
+						>
+							You have completed today's training.
+						</Text> */}
+						<ActivityIndicator size="large" color="#00ff00" />
+					</View>
+				</TouchableOpacity>
+			</Modal>
 		</View>
 	);
 };

@@ -23,7 +23,8 @@ const styles = StyleSheet.create({
 		height: '100%',
 		alignItems: 'flex-start',
 		justifyContent: 'flex-start',
-		position: 'relative'
+		position: 'relative',
+		backgroundColor: 'black'
 	},
 	funcBtn: {
 		borderWidth: 1,
@@ -164,7 +165,7 @@ const TrainingScreen = ({ navigation, route }) => {
 				style={{...styles.video, width: dimensions.width, height: dimensions.height}}
 				source={videoToPlay}
 				useNativeControls={false}
-				resizeMode={ResizeMode.COVER}
+				resizeMode={ResizeMode.CONTAIN}
 				isLooping
 				shouldPlay={shouldPlay}
 				// onLoad={()=>{video?.current?.presentFullscreenPlayer()}}
@@ -180,7 +181,7 @@ const TrainingScreen = ({ navigation, route }) => {
 				// }}
 			/>
 			<View
-				className='absolute flex flex-col justify-center items-center top-5 left-3'
+				className='absolute flex flex-col justify-center items-center top-7 left-32'
 			>
 				<View className='flex flex-row gap-5'>
 					<Text className='text-lg'>
@@ -210,7 +211,7 @@ const TrainingScreen = ({ navigation, route }) => {
 				<Text className='text-2xl font-semibold'>
 					{mode}
 				</Text>
-				<View className='flex flex-row items-center justify-center gap-1 z-10'>
+				{/* <View className='flex flex-row items-center justify-center gap-1 z-10'>
 					<TouchableOpacity
 						onPress={() => {
 							setUnit(1)
@@ -240,7 +241,7 @@ const TrainingScreen = ({ navigation, route }) => {
 					>
 						<Text style={styles.text}>REST</Text>
 					</TouchableOpacity>
-				</View>
+				</View> */}
 			</View>
 			<Modal
 				isVisible={toggleModal}
