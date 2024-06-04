@@ -13,6 +13,8 @@ import { SafeAreaView } from "react-native-safe-area-context";
 // import { useNavigation } from "@react-navigation/native";
 import { useAuth } from "@/app/context/AuthContext";
 import Modal from 'react-native-modal';
+import Icon from 'react-native-vector-icons/MaterialCommunityIcons';
+
 
 const LoginScreen = ({ navigation }) => {
 	const { onLogin, authState } = useAuth();
@@ -41,6 +43,9 @@ const LoginScreen = ({ navigation }) => {
 			navigation.navigate("Home");
 		}
 	}, [authState]);
+
+	// const [password, setPassword] = useState('');
+	const [isPasswordSecure, setIsPasswordSecure] = useState(true);
 
 	return (
 		<View style={{ flex: 1, backgroundColor: "#877dfa" }}>
@@ -90,14 +95,22 @@ const LoginScreen = ({ navigation }) => {
 						Password
 					</Text>
 					<TextInput
+					 	inlineImageLeft='search_icon'
 						style={styles.inputField}
-						secureTextEntry
+						secureTextEntry={isPasswordSecure}
 						placeholder='password'
 						value={loginForm.password}
 						onChangeText={(text) =>
 							handleFormChange("password", text)
 						}
 					/>
+					<TouchableOpacity onPress={() => setIsPasswordSecure(!isPasswordSecure)} className='w-8 absolute right-1 bottom-4'>
+						<Icon
+							name={isPasswordSecure ? 'eye' : 'eye-off'}
+							size={20}
+							color={'grey'}
+						/>
+					</TouchableOpacity>
 				</View>
 				<TouchableOpacity
 					style={{ alignItems: "flex-end", marginVertical: "10px" }}
