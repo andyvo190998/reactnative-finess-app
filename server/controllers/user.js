@@ -19,8 +19,6 @@ export const addUser = async (req, res) => {
 };
 
 export const login = async (req, res) => {
-    // re;
-    console.log('here');
     const user = await User.findOne({
         email: req.body.email
     });
@@ -28,10 +26,12 @@ export const login = async (req, res) => {
     if (!user) {
         return res.status(404).json('User not found!');
     }
+
     const isValidPassword = await bcrypt.compare(
         req.body.password,
         user.password
     );
+
     if (isValidPassword) {
         const authenticatedUser = {
             name: user.name,
@@ -52,6 +52,28 @@ export const login = async (req, res) => {
 
     } else {
         return res.status(401).json('Invalid email or password');
+    }
+};
+
+export const renewPassword = async (req, res) => {
+    const newPassword = await bcrypt.hash(req.body.password, 10);
+    try {
+        const user = await User.findOne({
+            email: req.body.email
+        });
+
+        if (!user) {
+            return res.status(404).json('User not found!');
+        }
+
+        await User.findOneAndUpdate({
+            email: req.body.email
+        }, {
+            password: newPassword,
+        });
+        return res.status(200).json('Update password success!');
+    } catch (error) {
+        return res.status(404).json(error);
     }
 };
 

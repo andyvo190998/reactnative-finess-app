@@ -7,7 +7,8 @@ import {
 	Image,
 	TextInput,
 	StyleSheet,
-	ActivityIndicator
+	ActivityIndicator,
+	Alert
 } from "react-native";
 import { SafeAreaView } from "react-native-safe-area-context";
 // import { useNavigation } from "@react-navigation/native";
@@ -17,9 +18,10 @@ import Icon from 'react-native-vector-icons/MaterialCommunityIcons';
 
 
 const LoginScreen = ({ navigation }) => {
-	const { onLogin, authState } = useAuth();
-	const [toggleModal, setToggleModal] = useState(false);
-	const [login, setLogin] = useState(false)
+	const { onLogin, authState, setToggleModal, toggleModal, handleRenewPassword } = useAuth();
+	const [isForgotPassword, setIsForgotPassword] = useState(false)
+	const [isPasswordSecure, setIsPasswordSecure] = useState(true);
+	const [isRenewPasswordSecure, setIsRenewPasswordSecure] = useState(true);
 
 	// const navigation = useNavigation();
 	const [loginForm, setLoginForm] = useState({
@@ -33,19 +35,43 @@ const LoginScreen = ({ navigation }) => {
 		});
 	};
 
+	const handlePress = async () => {
+			// setToggleModal(true)
+			if (isForgotPassword) {
+				if (loginForm.password !== loginForm.repeatPassword) {
+					Alert.alert(
+						'Request Fail',
+						'Password and repeat password are different!'
+					);
+					return
+				}
+				await handleRenewPassword(loginForm)
+			} else {
+				await onLogin(loginForm);
+			}
+			// setLogin(true)
+	}
+
 	useEffect(() => {
 		if (authState.authenticated) {
 			setLoginForm({
 				email: "",
 				password: "",
+				repeatPassword: ""
 			});
 			setToggleModal(false)
 			navigation.navigate("Home");
 		}
 	}, [authState]);
 
-	// const [password, setPassword] = useState('');
-	const [isPasswordSecure, setIsPasswordSecure] = useState(true);
+	useEffect(() => {
+		if (isForgotPassword === true) {
+			setLoginForm(previous => ({
+				...previous,
+				repeatPassword: ''
+			}))
+		}
+	}, [isForgotPassword])
 
 	return (
 		<View style={{ flex: 1, backgroundColor: "#877dfa" }}>
@@ -79,7 +105,7 @@ const LoginScreen = ({ navigation }) => {
 					</Text>
 					<TextInput
 						style={styles.inputField}
-						placeholder='email'
+						placeholder='Email'
 						value={loginForm.email}
 						onChangeText={(text) => handleFormChange("email", text)}
 					/>
@@ -98,7 +124,7 @@ const LoginScreen = ({ navigation }) => {
 					 	inlineImageLeft='search_icon'
 						style={styles.inputField}
 						secureTextEntry={isPasswordSecure}
-						placeholder='password'
+						placeholder='Password'
 						value={loginForm.password}
 						onChangeText={(text) =>
 							handleFormChange("password", text)
@@ -112,64 +138,100 @@ const LoginScreen = ({ navigation }) => {
 						/>
 					</TouchableOpacity>
 				</View>
+				{isForgotPassword && (
+					<View style={{ marginBottom: 2 }}>
+						<Text
+							style={{
+								color: "gray",
+								marginLeft: 4,
+								marginBottom: 5,
+							}}
+						>
+							Repeat password
+						</Text>
+						<TextInput
+							inlineImageLeft='search_icon'
+							style={styles.inputField}
+							secureTextEntry={isRenewPasswordSecure}
+							placeholder='Repeat password'
+							value={loginForm.repeatPassword}
+							onChangeText={(text) =>
+								handleFormChange("repeatPassword", text)
+							}
+						/>
+						<TouchableOpacity onPress={() => setIsRenewPasswordSecure(!isRenewPasswordSecure)} className='w-8 absolute right-1 bottom-4'>
+							<Icon
+								name={isRenewPasswordSecure ? 'eye' : 'eye-off'}
+								size={20}
+								color={'grey'}
+							/>
+						</TouchableOpacity>
+					</View>
+				)}
 				<TouchableOpacity
 					style={{ alignItems: "flex-end", marginVertical: "10px" }}
+					onPress={() => setIsForgotPassword(!isForgotPassword)}
 				>
 					<Text style={{ color: "gray", marginBottom: 5 }}>
-						Forgot Password?
+						{isForgotPassword ? 'Login' : 'Forgot Password?'}
 					</Text>
 				</TouchableOpacity>
 				<TouchableOpacity
-					onPress={async () => {
-						setToggleModal(true)
-						await onLogin(loginForm);
-						// setLogin(true)
-					}}
+					// onPress={async () => {
+					// 	setToggleModal(true)
+					// 	await onLogin(loginForm);
+					// 	// setLogin(true)
+					// }}
+					onPress={handlePress}
 					style={styles.loginBtn}
 				>
 					<Text className='font-xl font-bold text-center text-gray-700'>
-						Login
+						{isForgotPassword ? 'Update Password' : 'Login'}
 					</Text>
 				</TouchableOpacity>
 
-				<Text className='text-xl text-gray-700 font-bold text-center py-5'>
-					Or
-				</Text>
-
-				<View style={styles.logoContainer}>
-					<TouchableOpacity style={styles.logoBtn}>
-						<Image
-							source={require("../../assets/icons/google.png")}
-							style={styles.logoImg}
-						/>
-					</TouchableOpacity>
-					<TouchableOpacity style={styles.logoBtn}>
-						<Image
-							source={require("../../assets/icons/apple.png")}
-							style={styles.logoImg}
-						/>
-					</TouchableOpacity>
-					<TouchableOpacity style={styles.logoBtn}>
-						<Image
-							source={require("../../assets/icons/facebook.png")}
-							style={styles.logoImg}
-						/>
-					</TouchableOpacity>
-				</View>
-
-				<View style={styles.info}>
-					<Text style={{ color: "gray", fontWeight: "600" }}>
-						Don't have an account?
-					</Text>
-					<TouchableOpacity
-						onPress={() => navigation.navigate("Register")}
-					>
-						<Text style={{ fontWeight: "600", color: "#eab308" }}>
-							{" "}
-							Sign Up
+				{!isForgotPassword && (
+					<>
+						<Text className='text-xl text-gray-700 font-bold text-center py-5'>
+							Or
 						</Text>
-					</TouchableOpacity>
-				</View>
+
+						<View style={styles.logoContainer}>
+							<TouchableOpacity style={styles.logoBtn}>
+								<Image
+									source={require("../../assets/icons/google.png")}
+									style={styles.logoImg}
+								/>
+							</TouchableOpacity>
+							<TouchableOpacity style={styles.logoBtn}>
+								<Image
+									source={require("../../assets/icons/apple.png")}
+									style={styles.logoImg}
+								/>
+							</TouchableOpacity>
+							<TouchableOpacity style={styles.logoBtn}>
+								<Image
+									source={require("../../assets/icons/facebook.png")}
+									style={styles.logoImg}
+								/>
+							</TouchableOpacity>
+						</View>
+
+						<View style={styles.info}>
+							<Text style={{ color: "gray", fontWeight: "600" }}>
+								Don't have an account?
+							</Text>
+							<TouchableOpacity
+								onPress={() => navigation.navigate("Register")}
+							>
+								<Text style={{ fontWeight: "600", color: "#eab308" }}>
+									{" "}
+									Sign Up
+								</Text>
+							</TouchableOpacity>
+						</View>
+					</>
+				)}
 			</View>
 			<Modal
 				isVisible={toggleModal}
@@ -177,18 +239,6 @@ const LoginScreen = ({ navigation }) => {
 			>
 				<TouchableOpacity onPress={() => setToggleModal(false)}>
 					<View className='flex justify-center items-center'>
-						{/* <Text
-							className='text-slate-300 text-2xl'
-							style={{ fontFamily: 'DMBold' }}
-						>
-							Congratulation!
-						</Text>
-						<Text
-							className='text-slate-300 text-lg'
-							style={{ fontFamily: 'DMBold' }}
-						>
-							You have completed today's training.
-						</Text> */}
 						<ActivityIndicator size="large" color="#00ff00" />
 					</View>
 				</TouchableOpacity>

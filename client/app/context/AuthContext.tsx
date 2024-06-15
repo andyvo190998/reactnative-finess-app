@@ -19,6 +19,9 @@ interface AuthProps {
 		trialEndDate: string | null;
 		membership: string | null;
 	};
+	setToggleModal?: (prop: boolean) => void,
+	toggleModal?: boolean,
+	handleRenewPassword?: (loginForm: {email: string, password: string, repeatPassword?: string}) => Promise<any>
 }
 
 const TOKEN_KEY = 'access_token';
@@ -49,6 +52,7 @@ export const AuthProvider = ({ children }: any) => {
 		trialEndDate: null,
 		membership: null,
 	});
+	const [toggleModal, setToggleModal] = useState<boolean>(false);
 
 	const handleLogin = async (loginForm: {
 		email: string;
@@ -74,6 +78,7 @@ export const AuthProvider = ({ children }: any) => {
 					'Authorization'
 				] = `Bearer ${token}`;
 				await SecureStore.setItemAsync(TOKEN_KEY, token);
+				setToggleModal(false)
 				return true;
 			})
 			.catch((error) => {
@@ -81,6 +86,8 @@ export const AuthProvider = ({ children }: any) => {
 					'Login Fail',
 					'Please check your account and login again!'
 				);
+				setAuthState(authState)
+				setToggleModal(false)
 				return false;
 			});
 	};
@@ -101,6 +108,31 @@ export const AuthProvider = ({ children }: any) => {
 			membership: null,
 		});
 	};
+
+	const handleRenewPassword = async (loginForm: {
+		email: string,
+		password: string,
+		repeatPassword?: string
+	}) => {
+		await axios
+		.post(`${'https://reactnative-finess-app.vercel.app'}/api/users/renewpassword`, loginForm)
+		.then(async (res) => {
+			setToggleModal(false)
+			Alert.alert(
+				'Update Success',
+				'Your password has been changed!'
+			);
+			return true
+		})
+		.catch((error) => {
+			Alert.alert(
+				'Request Fail',
+				'Please try again!'
+			);
+			setToggleModal(false)
+			return false;
+		});
+	}
 
 	useEffect(() => {
 		const loadToken = async () => {
@@ -136,13 +168,17 @@ export const AuthProvider = ({ children }: any) => {
 	}, []);
 	const test = '123';
 	const value = {
-		setAuthState: setAuthState,
+		toggleModal: toggleModal,
 		authState: authState,
-		onLogin: handleLogin,
-		onLogOut: handleLogOut,
 		test: test,
 		userInfo: userInfo,
+
+		setAuthState: setAuthState,
+		onLogin: handleLogin,
+		onLogOut: handleLogOut,
 		setUserInfo: setUserInfo,
+		setToggleModal: setToggleModal,
+		handleRenewPassword: handleRenewPassword
 	};
 
 	return (
