@@ -115,7 +115,7 @@ export const AuthProvider = ({ children }: any) => {
 		repeatPassword?: string
 	}) => {
 		await axios
-		.post(`${'https://reactnative-finess-app.vercel.app'}/api/users/renewpassword`, loginForm)
+		.put(`${'https://reactnative-finess-app.vercel.app'}/api/users/renewpassword`, loginForm)
 		.then(async (res) => {
 			setToggleModal(false)
 			Alert.alert(
