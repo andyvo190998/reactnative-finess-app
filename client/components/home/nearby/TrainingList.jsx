@@ -1,8 +1,9 @@
-import React from "react";
-import { View, Text, ImageBackground, TouchableOpacity } from "react-native";
+import React, { useRef, useState } from "react";
+import { View, Text, ImageBackground, TouchableOpacity, StyleSheet, Dimensions } from "react-native";
 import Icon from "react-native-vector-icons/MaterialCommunityIcons";
-import * as ScreenOrientation from "expo-screen-orientation";
-import { trainingImage } from "@/assets/works";
+import { trainingImage, trainingVideos } from "@/assets/works";
+import Modal from 'react-native-modal';
+import { ResizeMode, Video } from "expo-av";
 
 const TrainingList = ({ navigation, trainingLevel }) => {
 	const dummyData = [
@@ -29,22 +30,22 @@ const TrainingList = ({ navigation, trainingLevel }) => {
 		},
 	];
 
+	const styles = StyleSheet.create({
+		video: {
+		  alignSelf: 'center',
+		//   width: 200,
+		  height: 200,
+		},
+	  });
+
+	const [toggleModal, setToggleModal] = useState(false)
+	const video = useRef(null);
 	return (
 		<View className='mt-2 flex flex-col'>
 			{trainingImage.map((image, idx) => {
 				return (
-					// <TouchableOpacity
-					// 	key={idx}
-					// 	onPress={() => {
-					// 		navigation.navigate("Training", {
-					// 			trainingLevel: item.trainingLevel,
-					// 			units: item.units,
-					// 		})
-					// 		ScreenOrientation.lockAsync(ScreenOrientation.OrientationLock.LANDSCAPE);
-					// 	}}
-					// >
+					<TouchableOpacity key={idx} onPress={() => setToggleModal(true)}>
 						<ImageBackground
-							key={idx}
 							imageStyle={{ borderRadius: 5 }}
 							className='w-full h-52 flex flex-row rounded mb-2'
 							source={image}
@@ -61,9 +62,28 @@ const TrainingList = ({ navigation, trainingLevel }) => {
 								</Text>
 							</View>
 						</ImageBackground>
-					// </TouchableOpacity>
+					</TouchableOpacity>
 				)
 			})}
+			<Modal
+				isVisible={toggleModal}
+				onBackdropPress={() => setToggleModal(false)}
+			>
+				<View className='flex flex-col bg-white justify-center p-2 rounded-lg'>
+					<Text className='text-lg font-bold mb-2'>Exercise Instruction</Text>
+					<Text>This is instruction text: Lorem ipsum dolor sit amet consectetur adipisicing elit. Nemo facilis excepturi deserunt sit debitis reprehenderit repudiandae labore laborum voluptatem similique, repellendus sed a illo autem tempora dignissimos eveniet pariatur? Est.</Text>
+					<Text className='my-2 font-bold'>Demo video. (just make an example and it will later change dynamically based on selected exercise)</Text>
+					<Video
+						ref={video}
+						style={{...styles.video, width: Dimensions.get("window").width }}
+						source={trainingVideos[0]}
+						resizeMode={ResizeMode.CONTAIN}
+						isLooping
+						shouldPlay={true}
+						useNativeControls={false}
+					/>
+				</View>
+			</Modal>
 		</View>
 	);
 };
