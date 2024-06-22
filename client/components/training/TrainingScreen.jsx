@@ -9,7 +9,6 @@ import {
 } from 'react-native';
 import React, { useEffect, useRef, useState } from 'react';
 import { Audio, ResizeMode, Video } from 'expo-av';
-import Icon from 'react-native-vector-icons/MaterialCommunityIcons';
 const soundSource = require('../../assets/sounds/count-down-tick.mp3');
 const successSource = require('../../assets/sounds/success.mp3');
 import Modal from 'react-native-modal';
@@ -111,6 +110,10 @@ const TrainingScreen = ({ navigation, route }) => {
 		} else if (mode === "Rest") {
 			setTimeout(() => setCount(previous => previous + 1), 0)
 			setTimeout(() => setMode("Training"), 0)
+			if (video.current) {
+				await video.current.setPositionAsync(0);
+				video.current.playAsync();
+			  }
 			setTimeout(() => setTime(45), 0)
 		}
 	}
@@ -168,17 +171,6 @@ const TrainingScreen = ({ navigation, route }) => {
 				resizeMode={ResizeMode.CONTAIN}
 				isLooping
 				shouldPlay={shouldPlay}
-				// onLoad={()=>{video?.current?.presentFullscreenPlayer()}}
-				// onFullscreenUpdate={async ({ fullscreenUpdate }) => {
-				// 	if (fullscreenUpdate === VideoFullscreenUpdate.PLAYER_DID_DISMISS) {
-				// 		await ScreenOrientation.lockAsync(ScreenOrientation.OrientationLock.PORTRAIT);
-				// 		return
-				// 	}
-				// 	await ScreenOrientation.lockAsync(
-				// 	  orientationIsLandscape ? ScreenOrientation.OrientationLock.PORTRAIT :
-				// 	  ScreenOrientation.OrientationLock.LANDSCAPE_LEFT,
-				//   );
-				// }}
 			/>
 			<View
 				className='absolute flex flex-col justify-center items-center top-7 left-32'

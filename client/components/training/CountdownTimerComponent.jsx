@@ -51,7 +51,6 @@ const CountdownTimerComponent = ({
   }, [isPaused, durationInSeconds, secondsRemaining]);
 
   useEffect(() => {
-    console.log(onReset, secondsRemaining)
     if (onReset === true) {
       setSecondsRemaining(durationInSeconds);
       setMinutes(Math.floor(durationInSeconds / 60));
