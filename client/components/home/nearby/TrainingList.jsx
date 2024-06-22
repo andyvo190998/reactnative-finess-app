@@ -2,6 +2,7 @@ import React from "react";
 import { View, Text, ImageBackground, TouchableOpacity } from "react-native";
 import Icon from "react-native-vector-icons/MaterialCommunityIcons";
 import * as ScreenOrientation from "expo-screen-orientation";
+import { trainingImage } from "@/assets/works";
 
 const TrainingList = ({ navigation, trainingLevel }) => {
 	const dummyData = [
@@ -30,44 +31,38 @@ const TrainingList = ({ navigation, trainingLevel }) => {
 
 	return (
 		<View className='mt-2 flex flex-col'>
-			{dummyData.map((item) => {
-				if (item.trainingLevel === trainingLevel) {
-					return (
-						<View key={item.id} className='mt-2 rounded-sm'>
-							<TouchableOpacity
-								onPress={() => {
-									navigation.navigate("Training", {
-										trainingLevel: item.trainingLevel,
-										units: item.units,
-									})
-									ScreenOrientation.lockAsync(ScreenOrientation.OrientationLock.LANDSCAPE);
-								}}
-							>
-								<ImageBackground
-									imageStyle={{ borderRadius: 5 }}
-									className='w-full h-52 flex flex-row rounded'
-									source={{
-										uri: item.uri,
-									}}
-									resizeMode='cover'
-								>
-									<View className='flex flex-row mt-5 ml-5 justify-center '>
-										<Icon
-											name='dumbbell'
-											size={30}
-											color={"white"}
-										/>
-										<Text className='text-white text-lg font-bold ml-2'>
-											{item.units} units
-										</Text>
-									</View>
-								</ImageBackground>
-							</TouchableOpacity>
-						</View>
-					);
-				} else {
-					return null;
-				}
+			{trainingImage.map((image, idx) => {
+				return (
+					// <TouchableOpacity
+					// 	key={idx}
+					// 	onPress={() => {
+					// 		navigation.navigate("Training", {
+					// 			trainingLevel: item.trainingLevel,
+					// 			units: item.units,
+					// 		})
+					// 		ScreenOrientation.lockAsync(ScreenOrientation.OrientationLock.LANDSCAPE);
+					// 	}}
+					// >
+						<ImageBackground
+							key={idx}
+							imageStyle={{ borderRadius: 5 }}
+							className='w-full h-52 flex flex-row rounded mb-2'
+							source={image}
+							resizeMode='cover'
+						>
+							<View className='flex flex-row mt-5 ml-5 justify-center '>
+								<Icon
+									name='dumbbell'
+									size={30}
+									color={"white"}
+								/>
+								<Text className='text-white text-lg font-bold ml-2'>
+									Exercise Name...
+								</Text>
+							</View>
+						</ImageBackground>
+					// </TouchableOpacity>
+				)
 			})}
 		</View>
 	);

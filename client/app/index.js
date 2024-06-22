@@ -55,7 +55,7 @@ const StackNav = ({ navigation }) => {
           }}
         >
 
-          <Welcome setTrainingLevel={setTrainingLevel} />
+          <Welcome setTrainingLevel={setTrainingLevel} navigation={navigation} />
           <TrainingList navigation={navigation} trainingLevel={trainingLevel} />
         </View>
       </ScrollView>
