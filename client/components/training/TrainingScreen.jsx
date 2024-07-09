@@ -13,7 +13,7 @@ const soundSource = require('../../assets/sounds/count-down-tick.mp3');
 const successSource = require('../../assets/sounds/success.mp3');
 import Modal from 'react-native-modal';
 import { images } from '@/constants';
-import { trainingVideos } from '@/assets/works';
+import { relaxVideo, trainingVideos } from '@/assets/works';
 import CountdownTimerComponent from './CountdownTimerComponent'
 import * as ScreenOrientation from "expo-screen-orientation";
 const styles = StyleSheet.create({
@@ -53,7 +53,7 @@ const TrainingScreen = ({ navigation, route }) => {
 	const trainingLevel = route.params.trainingLevel;
 	const [isTraining, setIsTraining] = useState(true);
 	const [isPlaying, setIsPlaying] = useState(false);
-	const [count, setCount] = useState(1);
+	const [count, setCount] = useState(0);
 	const [unit, setUnit] = useState(1);
 	const [videoList, setVideoList] = useState([...trainingVideos])
 	const [playedVideos, setPlayedVideos] = useState([])
@@ -63,7 +63,7 @@ const TrainingScreen = ({ navigation, route }) => {
 	const [shouldPlay, setShouldPlay] = useState(true)
 	const [dimensions, setDimensions] = useState(Dimensions.get('window'));
 	const [time, setTime] = useState(45)
-	const [mode, setMode] = useState("Training")
+	const [mode, setMode] = useState("Get Ready")
 	const [isPaused, setIsPaused] = useState(false)
 	const [onReset, setOnReset] = useState(false)
 
@@ -93,11 +93,13 @@ const TrainingScreen = ({ navigation, route }) => {
 	const handleOnfinish = async () => {
 		if (count >= 5){
 			if (unit < maxUnits) {
-				await playRandomVideo()
+				// await playRandomVideo()
+
+				setTimeout(() => setVideoToPlay(relaxVideo), 0)
 				setTimeout(() => setUnit(previous => previous + 1), 0)
 				setTimeout(() => setCount(1), 0)
-				setTimeout(() => setMode("Rest"), 0)
-				setTimeout(() => setTime(60), 0)
+				setTimeout(() => setMode("Long Break"), 0)
+				setTimeout(() => setTime(45), 0)
 			} else {
 				await handleComplete()
 			}
@@ -107,7 +109,7 @@ const TrainingScreen = ({ navigation, route }) => {
 			await playRandomVideo()
 			setTimeout(() => setMode("Rest"), 0)
 			setTimeout(() => setTime(15), 0)
-		} else if (mode === "Rest") {
+		} else if (mode === "Rest" || mode === "Get Ready") {
 			setTimeout(() => setCount(previous => previous + 1), 0)
 			setTimeout(() => setMode("Training"), 0)
 			if (video.current) {
@@ -115,6 +117,10 @@ const TrainingScreen = ({ navigation, route }) => {
 				video.current.playAsync();
 			  }
 			setTimeout(() => setTime(45), 0)
+		} else if (mode === 'Long Break') {
+			await playRandomVideo()
+			setTimeout(() => setMode("Get Ready"), 0)
+			setTimeout(() => setTime(15), 0)
 		}
 	}
 

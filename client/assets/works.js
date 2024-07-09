@@ -9,6 +9,7 @@ import video2 from './videos/video2.mp4';
 import video3 from './videos/video3.mp4';
 import video4 from './videos/video4.mp4';
 import video5 from './videos/video5.mp4';
+import relax from './videos/relax.mp4';
 import training_image1 from './images/trainings/training_image1.png';
 import training_image2 from './images/trainings/training_image2.png';
 import training_image3 from './images/trainings/training_image3.png';
@@ -31,6 +32,8 @@ export {
 };
 
 export const trainingVideos = [video1, video2, video3, video4, video5];
+
+export const relaxVideo = relax;
 
 export const trainingImage = [
     training_image1,

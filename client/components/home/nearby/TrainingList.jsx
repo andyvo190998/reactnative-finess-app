@@ -75,7 +75,11 @@ const TrainingList = ({ navigation, trainingLevel }) => {
 					<Text className='my-2 font-bold'>Demo video. (just make an example and it will later change dynamically based on selected exercise)</Text>
 					<Video
 						ref={video}
-						style={{...styles.video, width: Dimensions.get("window").width }}
+						style={{
+							...styles.video,
+							// width: Dimensions.get("window").width
+						}}
+						className='w-full'
 						source={trainingVideos[0]}
 						resizeMode={ResizeMode.CONTAIN}
 						isLooping
