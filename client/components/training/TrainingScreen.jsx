@@ -9,7 +9,7 @@ import {
 } from 'react-native';
 import React, { useEffect, useRef, useState } from 'react';
 import { Audio, ResizeMode, Video } from 'expo-av';
-const soundSource = require('../../assets/sounds/count-down-tick.mp3');
+const soundSource = require('../../assets/sounds/count-down-tick-5.wav');
 const successSource = require('../../assets/sounds/success.mp3');
 import Modal from 'react-native-modal';
 import { images } from '@/constants';
@@ -62,7 +62,7 @@ const TrainingScreen = ({ navigation, route }) => {
 	const [playedIndex, setPlayedIndex] = useState(firstPlay)
 	const [shouldPlay, setShouldPlay] = useState(true)
 	const [dimensions, setDimensions] = useState(Dimensions.get('window'));
-	const [time, setTime] = useState(45)
+	const [time, setTime] = useState(15)
 	const [mode, setMode] = useState("Get Ready")
 	const [isPaused, setIsPaused] = useState(false)
 	const [onReset, setOnReset] = useState(false)
@@ -116,7 +116,9 @@ const TrainingScreen = ({ navigation, route }) => {
 				await video.current.setPositionAsync(0);
 				video.current.playAsync();
 			  }
-			setTimeout(() => setTime(45), 0)
+			if (count !== 0) {
+				setTimeout(() => setTime(45), 0)
+			}
 		} else if (mode === 'Long Break') {
 			await playRandomVideo()
 			setTimeout(() => setMode("Get Ready"), 0)
@@ -198,7 +200,7 @@ const TrainingScreen = ({ navigation, route }) => {
 					isPaused={isPaused}
 					onFinish={async (e) => {await handleOnfinish()}}
 					onChange={async (e) => {
-						if (e === 4) {
+						if (e === 6) {
 							await playSound()
 						}
 					}}

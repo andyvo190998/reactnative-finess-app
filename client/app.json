@@ -5,6 +5,7 @@
       "backgroundColor": "#FFFFFF",
       "resizeMode": "contain"
     },
+    "icon": "./assets/images/app-logo.png",
     "ios": {
       "config": {
         "usesNonExemptEncryption": false
@@ -14,7 +15,7 @@
     "web": {
       "bundler": "metro"
     },
-    "name": "fitness",
+    "name": "mybs",
     "slug": "fitness",
     "plugins": [
       "expo-secure-store",
@@ -32,7 +33,7 @@
       "policy": "appVersion"
     },
     "android": {
-      "package": "com.andy123321.fitness"
+      "package": "com.andy123321.mybs"
     },
     "extra": {
       "router": {
