@@ -21,6 +21,7 @@ import { useEffect, useState } from 'react';
 LogBox.ignoreLogs(['new NativeEventEmitter']);
 LogBox.ignoreLogs(["VirtualizedLists should never be nested"]);
 import * as ScreenOrientation from "expo-screen-orientation";
+import { useAuth } from './context/AuthContext';
 
 
 const StackNav = ({ navigation }) => {
@@ -65,6 +66,8 @@ const StackNav = ({ navigation }) => {
 
 export default function Home() {
   const Drawer = createDrawerNavigator();
+  const { authState } = useAuth();
+  console.log(authState);
   useEffect(() => {
     ScreenOrientation.lockAsync(ScreenOrientation.OrientationLock.PORTRAIT);
   }, []);
@@ -76,12 +79,16 @@ export default function Home() {
         screenOptions={{
           headerShown: false
         }}>
-        <Drawer.Screen name="Home" component={StackNav} initialParams={{ itemId: 42 }} />
+        {authState.authenticated && (
+          <>
+            <Drawer.Screen name="Home" component={StackNav} initialParams={{ itemId: 42 }} />
+            <Drawer.Screen name="Profile" component={Profile} options={{ headerShown: false }} />
+            <Drawer.Screen name="Training" component={TrainingScreen} options={{ headerShown: false }} />
+            <Drawer.Screen name="Subscription" component={Subscription} options={{ headerShown: false }} />
+          </>
+        )}
         <Drawer.Screen name="Login" component={LoginScreen} />
         <Drawer.Screen name="Register" component={RegisterPage} />
-        <Drawer.Screen name="Profile" component={Profile} options={{ headerShown: false }} />
-        <Drawer.Screen name="Training" component={TrainingScreen} options={{ headerShown: false }} />
-        <Drawer.Screen name="Subscription" component={Subscription} options={{ headerShown: false }} />
         <Drawer.Screen name="StartingPage" component={StartingPage} />
       </Drawer.Navigator>
     </NavigationContainer>

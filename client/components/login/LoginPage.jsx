@@ -8,7 +8,8 @@ import {
 	TextInput,
 	StyleSheet,
 	ActivityIndicator,
-	Alert
+	Alert,
+	BackHandler
 } from "react-native";
 import { SafeAreaView } from "react-native-safe-area-context";
 // import { useNavigation } from "@react-navigation/native";
@@ -72,6 +73,27 @@ const LoginScreen = ({ navigation }) => {
 			}))
 		}
 	}, [isForgotPassword])
+
+	useEffect(() => {
+		const backAction = () => {
+		  Alert.alert("Hold on!", "Are you sure you want to exit the app?", [
+			{
+			  text: "Cancel",
+			  onPress: () => null,
+			  style: "cancel"
+			},
+			{ text: "YES", onPress: () => BackHandler.exitApp() }
+		  ]);
+		  return true;
+		};
+
+		const backHandler = BackHandler.addEventListener(
+		  "hardwareBackPress",
+		  backAction
+		);
+
+		return () => backHandler.remove();
+	  }, []);
 
 	return (
 		<View style={{ flex: 1, backgroundColor: "#877dfa" }}>

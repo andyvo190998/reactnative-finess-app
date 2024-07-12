@@ -9,13 +9,14 @@ import {
 } from 'react-native';
 import React, { useEffect, useRef, useState } from 'react';
 import { Audio, ResizeMode, Video } from 'expo-av';
-const soundSource = require('../../assets/sounds/count-down-tick-5.wav');
+const soundSource = require('../../assets/sounds/count-down-ticket-1.mp3');
 const successSource = require('../../assets/sounds/success.mp3');
 import Modal from 'react-native-modal';
 import { images } from '@/constants';
 import { relaxVideo, trainingVideos } from '@/assets/works';
 import CountdownTimerComponent from './CountdownTimerComponent'
 import * as ScreenOrientation from "expo-screen-orientation";
+import Icon from 'react-native-vector-icons/MaterialCommunityIcons';
 const styles = StyleSheet.create({
 	container: {
 		flex: 1,
@@ -50,14 +51,12 @@ const styles = StyleSheet.create({
 const TrainingScreen = ({ navigation, route }) => {
 	const maxUnits = route.params.units;
 	const firstPlay = trainingVideos[Math.floor(Math.random() * trainingVideos.length)]
-	const trainingLevel = route.params.trainingLevel;
-	const [isTraining, setIsTraining] = useState(true);
-	const [isPlaying, setIsPlaying] = useState(false);
-	const [count, setCount] = useState(0);
+	const suffledArr = shuffleArray(trainingVideos)
+	const [count, setCount] = useState(1);
 	const [unit, setUnit] = useState(1);
-	const [videoList, setVideoList] = useState([...trainingVideos])
+	const [videoList, setVideoList] = useState(suffledArr)
 	const [playedVideos, setPlayedVideos] = useState([])
-	const [videoToPlay, setVideoToPlay] = useState(firstPlay)
+	const [videoToPlay, setVideoToPlay] = useState(suffledArr[0])
 	const [toggleModal, setToggleModal] = useState(false);
 	const [playedIndex, setPlayedIndex] = useState(firstPlay)
 	const [shouldPlay, setShouldPlay] = useState(true)
@@ -66,6 +65,17 @@ const TrainingScreen = ({ navigation, route }) => {
 	const [mode, setMode] = useState("Get Ready")
 	const [isPaused, setIsPaused] = useState(false)
 	const [onReset, setOnReset] = useState(false)
+
+	function shuffleArray(array) {
+		let arrayCopy = [...array]
+		for (var i = arrayCopy.length - 1; i > 0; i--) {
+			var j = Math.floor(Math.random() * (i + 1));
+			var temp = arrayCopy[i];
+			arrayCopy[i] = arrayCopy[j];
+			arrayCopy[j] = temp;
+		}
+		return arrayCopy
+	}
 
 	const video = useRef(null);
 
@@ -81,13 +91,14 @@ const TrainingScreen = ({ navigation, route }) => {
 	};
 
 	const playRandomVideo = async () => {
-		const availableVideos = videoList.slice(0, playedIndex).concat(videoList.slice(playedIndex + 1));
-		setTimeout(() => setVideoList(availableVideos), 0)
-		const randomIndex = Math.floor(Math.random() * availableVideos.length);
-		setTimeout(() => setPlayedIndex(randomIndex), 0)
-		const videoToPlay = availableVideos[randomIndex];
-		setTimeout(() => setVideoToPlay(videoToPlay ?? videoList[Math.floor(Math.random() * videoList.length)]), 0)
-		setTimeout(() => setPlayedVideos(previous => [...previous, videoToPlay]), 0)
+		// const availableVideos = videoList.slice(0, playedIndex).concat(videoList.slice(playedIndex + 1));
+		// setTimeout(() => setVideoList(availableVideos), 0)
+		// const randomIndex = Math.floor(Math.random() * availableVideos.length);
+		// setTimeout(() => setPlayedIndex(randomIndex), 0)
+		// const videoToPlay = availableVideos[randomIndex];
+		// // setTimeout(() => setVideoToPlay(videoToPlay ?? videoList[Math.floor(Math.random() * videoList.length)]), 0)
+		// setTimeout(() => setPlayedVideos(previous => [...previous, videoToPlay]), 0)
+		setTimeout(() => setVideoToPlay(videoList[count - 1]), 0)
 	}
 
 	const handleOnfinish = async () => {
@@ -142,6 +153,15 @@ const TrainingScreen = ({ navigation, route }) => {
 		return true;
 	}
 
+	const onResetExercise = () => {
+		setUnit(1)
+		setCount(1)
+		setIsPaused(false)
+		setMode("Get Ready")
+		setTime(15)
+		setOnReset(true)
+	}
+
 
 	useEffect(() => {
 		if (playedVideos.length === trainingVideos.length) {
@@ -169,24 +189,30 @@ const TrainingScreen = ({ navigation, route }) => {
 		setShouldPlay(true)
 		setIsPaused(false)
 	}, [route])
+
+	useEffect(() => {
+		onResetExercise()
+	}, [route, navigation])
 	return (
 		<View style={styles.container}>
-			<Video
-				ref={video}
-				style={{...styles.video, width: dimensions.width, height: dimensions.height}}
-				source={videoToPlay}
-				useNativeControls={false}
-				resizeMode={ResizeMode.CONTAIN}
-				isLooping
-				shouldPlay={shouldPlay}
-			/>
+			{/* {videoList.length !== 0 && ( */}
+				<Video
+					ref={video}
+					style={{...styles.video, width: dimensions.width, height: dimensions.height}}
+					source={videoToPlay}
+					useNativeControls={false}
+					resizeMode={ResizeMode.CONTAIN}
+					isLooping
+					shouldPlay={shouldPlay}
+				/>
+			{/* )} */}
 			<View
 				className='absolute flex flex-col justify-center items-center top-7 left-32'
 			>
 				<View className='flex flex-row gap-5'>
 					<Text className='text-lg'>
 						Exercise :{' '}
-						<Text style={{ fontFamily: 'DMBold' }}>{count}</Text>
+						<Text style={{ fontFamily: 'DMBold' }}>{count - 1}</Text>
 					</Text>
 					<Text className='text-lg'>
 						Unit :{' '}
@@ -211,21 +237,18 @@ const TrainingScreen = ({ navigation, route }) => {
 				<Text className='text-2xl font-semibold'>
 					{mode}
 				</Text>
-				{/* <View className='flex flex-row items-center justify-center gap-1 z-10'>
+				<View className='flex flex-row items-center justify-center gap-1 z-10'>
 					<TouchableOpacity
-						onPress={() => {
-							setUnit(1)
-							setCount(1)
-							setIsPaused(true)
-							setMode("Training")
-							setTime(45)
-							setOnReset(true)
-						}}
+						onPress={() => onResetExercise()}
 						style={styles.funcBtn}
 					>
 						<Text style={styles.text}>RESET</Text>
 					</TouchableOpacity>
-					<TouchableOpacity onPress={() => setIsPaused(!isPaused)}>
+					<TouchableOpacity
+						onPress={() => {
+							setIsPaused(!isPaused)
+							setShouldPlay(!shouldPlay)
+						}}>
 						<Icon
 							name={isPaused ? 'play' : 'pause'}
 							size={80}
@@ -241,7 +264,7 @@ const TrainingScreen = ({ navigation, route }) => {
 					>
 						<Text style={styles.text}>REST</Text>
 					</TouchableOpacity>
-				</View> */}
+				</View>
 			</View>
 			<Modal
 				isVisible={toggleModal}
