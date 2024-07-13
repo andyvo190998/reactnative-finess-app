@@ -17,6 +17,8 @@ import { relaxVideo, trainingVideos } from '@/assets/works';
 import CountdownTimerComponent from './CountdownTimerComponent'
 import * as ScreenOrientation from "expo-screen-orientation";
 import Icon from 'react-native-vector-icons/MaterialCommunityIcons';
+import { useKeepAwake } from 'expo-keep-awake';
+
 const styles = StyleSheet.create({
 	container: {
 		flex: 1,
@@ -49,6 +51,7 @@ const styles = StyleSheet.create({
 	},
 });
 const TrainingScreen = ({ navigation, route }) => {
+	useKeepAwake();
 	const maxUnits = route.params.units;
 	const firstPlay = trainingVideos[Math.floor(Math.random() * trainingVideos.length)]
 	const suffledArr = shuffleArray(trainingVideos)
@@ -138,11 +141,16 @@ const TrainingScreen = ({ navigation, route }) => {
 	}
 
 	const handleComplete = async () => {
+		const suffledArr = shuffleArray(trainingVideos)
+		setTimeout(() => setVideoList(suffledArr), 0)
 		await playSuccessSound();
-		setToggleModal(true);
-		setIsPaused(true)
-		setUnit(1)
-		setCount(1)
+		setTimeout(() => setToggleModal(true), 0)
+		setTimeout(() => setIsPaused(true), 0)
+		setTimeout(() => setUnit(1), 0)
+		setTimeout(() => setCount(1), 0)
+		setTimeout(() => setMode("Get Ready"), 0)
+		setTimeout(() => setTime(15), 0)
+		setTimeout(() => setShouldPlay(false), 0)
 	}
 
 	const handleBackButtonClick = () => {
