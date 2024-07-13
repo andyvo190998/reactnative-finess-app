@@ -36,14 +36,44 @@ export const trainingVideos = [video1, video2, video3, video4, video5];
 export const relaxVideo = relax;
 
 export const trainingImage = [
-    training_image1,
-    training_image2,
-    training_image3,
-    training_image4,
-    training_image5,
-    training_image6,
-    training_image7,
-    training_image8,
-    training_image9,
-    training_image10
+    {
+        source: training_image1,
+        name: 'Prone Arm Circles'
+    },
+    {
+        source: training_image2,
+        name: 'Worlds Greatest Stretch'
+    },
+    {
+        source: training_image3,
+        name: 'Plank'
+    },
+    {
+        source: training_image4,
+        name: 'Hip Twist Sitting'
+    },
+    {
+        source: training_image5,
+        name: 'Leg Lift And Roll'
+    },
+    {
+        source: training_image6,
+        name: 'Lunge And Rotation'
+    },
+    {
+        source: training_image7,
+        name: 'Cat And Cow Staying'
+    },
+    {
+        source: training_image8,
+        name: 'Päckchen Parcel'
+    },
+    {
+        source: training_image9,
+        name: 'Plank With Leg Lift'
+    },
+    {
+        source: training_image10,
+        name: 'Lateral Body Lift'
+    },
 ];

@@ -37,7 +37,7 @@ const LoginScreen = ({ navigation }) => {
 	};
 
 	const handlePress = async () => {
-			// setToggleModal(true)
+			setToggleModal(true)
 			if (isForgotPassword) {
 				if (loginForm.password !== loginForm.repeatPassword) {
 					Alert.alert(
@@ -76,15 +76,19 @@ const LoginScreen = ({ navigation }) => {
 
 	useEffect(() => {
 		const backAction = () => {
-		  Alert.alert("Hold on!", "Are you sure you want to exit the app?", [
-			{
-			  text: "Cancel",
-			  onPress: () => null,
-			  style: "cancel"
-			},
-			{ text: "YES", onPress: () => BackHandler.exitApp() }
-		  ]);
-		  return true;
+			if (!authState.authenticated) {
+				Alert.alert("Hold on!", "Are you sure you want to exit the app?", [
+				  {
+					text: "Cancel",
+					onPress: () => null,
+					style: "cancel"
+				  },
+				  { text: "YES", onPress: () => BackHandler.exitApp() }
+				]);
+				return true;
+			} else {
+				return false
+			}
 		};
 
 		const backHandler = BackHandler.addEventListener(
@@ -93,7 +97,7 @@ const LoginScreen = ({ navigation }) => {
 		);
 
 		return () => backHandler.remove();
-	  }, []);
+	  }, [authState]);
 
 	return (
 		<View style={{ flex: 1, backgroundColor: "#877dfa" }}>

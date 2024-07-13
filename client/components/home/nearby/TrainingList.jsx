@@ -40,15 +40,22 @@ const TrainingList = ({ navigation, trainingLevel }) => {
 
 	const [toggleModal, setToggleModal] = useState(false)
 	const video = useRef(null);
+	const [selectedExercise, setSelectedExercise] = useState('')
 	return (
 		<View className='mt-2 flex flex-col'>
 			{trainingImage.map((image, idx) => {
 				return (
-					<TouchableOpacity key={idx} onPress={() => setToggleModal(true)}>
+					<TouchableOpacity
+						activeOpacity={1}
+						key={idx}
+						onPress={() => {
+							setToggleModal(true)
+							setSelectedExercise(image.name)
+						}}>
 						<ImageBackground
 							imageStyle={{ borderRadius: 5 }}
 							className='w-full h-52 flex flex-row rounded mb-2'
-							source={image}
+							source={image.source}
 							resizeMode='cover'
 						>
 							<View className='flex flex-row mt-5 ml-5 justify-center '>
@@ -58,7 +65,7 @@ const TrainingList = ({ navigation, trainingLevel }) => {
 									color={"white"}
 								/>
 								<Text className='text-white text-lg font-bold ml-2'>
-									Exercise Name...
+								{image.name}
 								</Text>
 							</View>
 						</ImageBackground>
@@ -67,10 +74,13 @@ const TrainingList = ({ navigation, trainingLevel }) => {
 			})}
 			<Modal
 				isVisible={toggleModal}
-				onBackdropPress={() => setToggleModal(false)}
+				onBackdropPress={() => {
+					setToggleModal(false)
+					setSelectedExercise('')
+				}}
 			>
 				<View className='flex flex-col bg-white justify-center p-2 rounded-lg'>
-					<Text className='text-lg font-bold mb-2'>Exercise Instruction</Text>
+					<Text className='text-lg font-bold mb-2'>{selectedExercise}</Text>
 					<Text>This is instruction text: Lorem ipsum dolor sit amet consectetur adipisicing elit. Nemo facilis excepturi deserunt sit debitis reprehenderit repudiandae labore laborum voluptatem similique, repellendus sed a illo autem tempora dignissimos eveniet pariatur? Est.</Text>
 					<Text className='my-2 font-bold'>Demo video. (just make an example and it will later change dynamically based on selected exercise)</Text>
 					<Video

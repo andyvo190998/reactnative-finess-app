@@ -1,4 +1,4 @@
-import { View, StyleSheet } from 'react-native';
+import { View, StyleSheet, Alert } from 'react-native';
 import React from 'react';
 import { DrawerContentScrollView, DrawerItem } from '@react-navigation/drawer';
 import {
@@ -69,7 +69,11 @@ const DrawerContent = (props) => {
               )}
               label="Bookmarks"
               onPress={() => {
-                props.navigation.navigate('BookmarkScreen');
+                // props.navigation.navigate('BookmarkScreen');
+                Alert.alert(
+                  'Info',
+                  'This feature is temporarily disable'
+                );
               }}
             />
 
@@ -79,7 +83,11 @@ const DrawerContent = (props) => {
               )}
               label="Settings"
               onPress={() => {
-                props.navigation.navigate('SettingsScreen');
+                // props.navigation.navigate('SettingsScreen');
+                Alert.alert(
+                  'Info',
+                  'This feature is temporarily disable'
+                );
               }}
             />
             <DrawerItem
@@ -88,12 +96,21 @@ const DrawerContent = (props) => {
               )}
               label="Support"
               onPress={() => {
-                props.navigation.navigate('Login');
+                // props.navigation.navigate('Login');
+                Alert.alert(
+                  'Info',
+                  'This feature is temporarily disable'
+                );
               }}
             />
           </Drawer.Section>
           <Drawer.Section title="Preferences">
-            <TouchableRipple>
+            <TouchableRipple onPress={() => {
+              		Alert.alert(
+                    'Info',
+                    'This feature is temporarily disable'
+                  );
+            }}>
               <View style={styles.preference}>
                 <Text>Dark Theme</Text>
                 <View pointerEvents="none">

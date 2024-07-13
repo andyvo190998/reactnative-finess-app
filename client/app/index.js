@@ -67,7 +67,6 @@ const StackNav = ({ navigation }) => {
 export default function Home() {
   const Drawer = createDrawerNavigator();
   const { authState } = useAuth();
-  console.log(authState);
   useEffect(() => {
     ScreenOrientation.lockAsync(ScreenOrientation.OrientationLock.PORTRAIT);
   }, []);

@@ -92,6 +92,11 @@ const Subscription = () => {
 	};
 
 	const handleGetAccessToken = async (type, price) => {
+		Alert.alert(
+			'Info',
+			'This feature is temporarily disable'
+		);
+		return
 		const amount = price;
 		const dataDetail = {
 			intent: "sale",
@@ -136,7 +141,7 @@ const Subscription = () => {
 				cancel_url: "https://example.com/",
 			},
 		};
-
+		console.log(PAYPAL_API)
 		await axios
 			.post(PAYPAL_API, "grant_type=client_credentials", {
 				headers: {
@@ -330,13 +335,9 @@ const Subscription = () => {
 														</Text>
 														{item.benefits.map(
 															(item) => (
-																<View className='flex flex-row items-center gap-2 mb-2'>
+																<View key={item} className='flex flex-row items-center gap-2 mb-2'>
 																	<Feather name='check-circle' />
-																	<Text
-																		key={
-																			item
-																		}
-																	>
+																	<Text>
 																		{item}
 																	</Text>
 																</View>
