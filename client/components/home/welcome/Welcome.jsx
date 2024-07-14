@@ -30,7 +30,7 @@ const Welcome = ({ setTrainingLevel, navigation }) => {
 			<View style={styles.container}>
 				<Text style={styles.userName}>Hello {userInfo.userName}</Text>
 				<Text style={styles.welcomeMessage}>
-					Find your perfect plan
+					Let's us help your back
 				</Text>
 			</View>
 

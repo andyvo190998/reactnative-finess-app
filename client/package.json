@@ -64,7 +64,8 @@
     "react-native-webview": "13.6.4",
     "styled-components": "^6.1.8",
     "expo-screen-orientation": "~6.4.1",
-    "expo-keep-awake": "~12.8.2"
+    "expo-keep-awake": "~12.8.2",
+    "expo-screen-capture": "~5.8.1"
   },
   "devDependencies": {
     "@babel/core": "^7.20.0",

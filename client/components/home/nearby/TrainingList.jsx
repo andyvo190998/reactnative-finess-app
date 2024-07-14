@@ -34,7 +34,8 @@ const TrainingList = ({ navigation, trainingLevel }) => {
 		video: {
 		  alignSelf: 'center',
 		//   width: 200,
-		  height: 200,
+		//   height: 200,
+		  aspectRatio: 16/9
 		},
 	  });
 
@@ -54,7 +55,7 @@ const TrainingList = ({ navigation, trainingLevel }) => {
 						}}>
 						<ImageBackground
 							imageStyle={{ borderRadius: 5 }}
-							className='w-full h-52 flex flex-row rounded mb-2'
+							className='w-full aspect-video flex flex-row rounded mb-2'
 							source={image.source}
 							resizeMode='cover'
 						>

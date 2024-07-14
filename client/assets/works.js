@@ -20,6 +20,7 @@ import training_image7 from './images/trainings/training_image7.png';
 import training_image8 from './images/trainings/training_image8.png';
 import training_image9 from './images/trainings/training_image9.png';
 import training_image10 from './images/trainings/training_image10.png';
+import logo from './images/app-logo.png';
 
 
 export {
@@ -34,6 +35,8 @@ export {
 export const trainingVideos = [video1, video2, video3, video4, video5];
 
 export const relaxVideo = relax;
+
+export const appLogo = logo;
 
 export const trainingImage = [
     {
