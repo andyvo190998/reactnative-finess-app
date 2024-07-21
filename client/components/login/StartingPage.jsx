@@ -16,13 +16,13 @@ const StartingPage = ({ navigation }) => {
 	return (
 		<ImageBackground
 			imageStyle={{ borderRadius: 5 }}
-			className='w-full h-full flex flex-col rounded  justify-between items-center'
+			className="w-full h-full flex flex-col rounded  justify-between items-center"
 			source={require("../../assets/images/login-page.jpg")}
-			resizeMode='cover'
+			resizeMode="cover"
 		>
-			<View className='w-full h-full  flex -flex-col justify-between items-center py-10'>
+			<View className="w-full h-full  flex -flex-col justify-between items-center py-10">
 				<Image
-					resizeMode='contain'
+					resizeMode="contain"
 					source={images.logo}
 					style={{
 						width: "50%",
@@ -40,14 +40,13 @@ const StartingPage = ({ navigation }) => {
 							marginBottom: 20,
 						}}
 					>
-						Best <Text className='text-red-600'>Workouts</Text>{" "}
-						{"\n"} For You
+						Best <Text className="text-red-600">Workouts</Text> {"\n"} For You
 					</Text>
 					<Button
-						mode='elevated'
-						textColor='black'
+						mode="elevated"
+						textColor="black"
 						dark={true}
-						buttonColor='rgb(177 177 77)'
+						buttonColor="rgb(177 177 77)"
 						onPress={() => {
 							if (authState.authenticated) {
 								navigation.navigate("Home", { id: 1 });
@@ -56,7 +55,7 @@ const StartingPage = ({ navigation }) => {
 							}
 						}}
 						style={btn}
-						className='color-white'
+						className="color-white"
 					>
 						Get Started
 					</Button>
