@@ -1,12 +1,4 @@
-import {
-	View,
-	Text,
-	TouchableOpacity,
-	StyleSheet,
-	Alert,
-	ScrollView,
-	Image,
-} from "react-native";
+import { View, Text, TouchableOpacity, StyleSheet, Alert, ScrollView, Image } from "react-native";
 import React, { useState } from "react";
 import { Link, useLocalSearchParams } from "expo-router";
 import { PAYPAL_CLIENT_ID, PAYPAL_SECRET_KEY, PAYPAL_API } from "@env";
@@ -92,11 +84,8 @@ const Subscription = () => {
 	};
 
 	const handleGetAccessToken = async (type, price) => {
-		Alert.alert(
-			'Info',
-			'This feature is temporarily disable'
-		);
-		return
+		Alert.alert("Info", "This feature is temporarily disable");
+		return;
 		const amount = price;
 		const dataDetail = {
 			intent: "sale",
@@ -141,14 +130,12 @@ const Subscription = () => {
 				cancel_url: "https://example.com/",
 			},
 		};
-		console.log(PAYPAL_API)
+		console.log(PAYPAL_API);
 		await axios
 			.post(PAYPAL_API, "grant_type=client_credentials", {
 				headers: {
 					"Content-Type": "text/plain",
-					Authorization: `Basic ${btoa(
-						PAYPAL_CLIENT_ID + ":" + PAYPAL_SECRET_KEY
-					)}`,
+					Authorization: `Basic ${btoa(PAYPAL_CLIENT_ID + ":" + PAYPAL_SECRET_KEY)}`,
 				},
 			})
 			.then((res) => {
@@ -156,21 +143,15 @@ const Subscription = () => {
 				setAccessToken(access_token);
 
 				axios
-					.post(
-						`https://api.sandbox.paypal.com/v1/payments/payment`,
-						dataDetail,
-						{
-							headers: {
-								"Content-Type": "application/json",
-								Authorization: `Bearer ${access_token}`,
-							},
-						}
-					)
+					.post(`https://api.sandbox.paypal.com/v1/payments/payment`, dataDetail, {
+						headers: {
+							"Content-Type": "application/json",
+							Authorization: `Bearer ${access_token}`,
+						},
+					})
 					.then((response) => {
 						const { id, links } = response.data;
-						const approvalUrl = links.find(
-							(data) => data.rel == "approval_url"
-						).href;
+						const approvalUrl = links.find((data) => data.rel == "approval_url").href;
 						setPaypalUrl(approvalUrl);
 						setAuthId(id);
 					})
@@ -226,9 +207,7 @@ const Subscription = () => {
 						marginTop: 40,
 					}}
 					source={{ uri: paypalUrl }}
-					onNavigationStateChange={(data) =>
-						_onNavigationStateChange(data)
-					}
+					onNavigationStateChange={(data) => _onNavigationStateChange(data)}
 					javaScriptEnabled={true}
 					domStorageEnabled={true}
 					startInLoadingState={true}
@@ -238,12 +217,12 @@ const Subscription = () => {
 					style={styles.container}
 					showsVerticalScrollIndicator={false}
 					showsHorizontalScrollIndicator={false}
-					className='bg-[#1c1c1d]'
+					className="bg-[#1c1c1d]"
 				>
-					<View className='h-full flex justify-center items-center  flex-col'>
-						<View className=' flex-1 mt-14 flex flex-col items-center justify-between w-full min-h-[50vh] mb-5 '>
-							<View className=' flex flex-col justify-center items-center'>
-								<View className='bg-slate-600 rounded-full w-36 h-36 flex items-center justify-center  shadow hover:shadow-2xl mb-4'>
+					<View className="h-full flex justify-center items-center  flex-col">
+						<View className=" flex-1 mt-14 flex flex-col items-center justify-between w-full min-h-[50vh] mb-5 ">
+							<View className=" flex flex-col justify-center items-center">
+								<View className="bg-slate-600 rounded-full w-36 h-36 flex items-center justify-center  shadow hover:shadow-2xl mb-4">
 									{/* <Icon
 										className='mb-2'
 										name='award'
@@ -251,9 +230,9 @@ const Subscription = () => {
 										size={80}
 									/> */}
 									<Image
-										resizeMode='contain'
+										resizeMode="contain"
 										source={images.logo}
-										className='rounded-full'
+										className="rounded-full"
 										style={{
 											width: "100%",
 											height: undefined,
@@ -262,108 +241,92 @@ const Subscription = () => {
 									/>
 								</View>
 								<Text
-									className='text-xl text-slate-300'
+									className="text-xl text-slate-300"
 									style={{ fontFamily: "DMBold" }}
 								>
 									{userInfo.membership?.toUpperCase()} PLAN
 								</Text>
 							</View>
 							{/* {userInfo.membership === "Free Trial" && ( */}
-							<View className='flex flex-col justify-center items-center w-1/2 '>
-								<Text className='color-red-300 text-md mb-4 '>
-									10 Days Left!
-								</Text>
-								<Text className='text-center text-slate-300 '>
+							<View className="flex flex-col justify-center items-center w-1/2 ">
+								<Text className="color-red-300 text-md mb-4 ">10 Days Left!</Text>
+								<Text className="text-center text-slate-300 ">
 									Your plan will expire on February 22, 2024
 								</Text>
 							</View>
 							{/* )} */}
 
-							<View className='w-full h-10  flex flex-row justify-center items-center  '>
-								<View className='border border-gray-500 w-[30vw]' />
-								<View className='bg-slate-400 w-32 h-full flex items-center justify-center rounded-full'>
+							<View className="w-full h-10  flex flex-row justify-center items-center  ">
+								<View className="border border-gray-500 w-[30vw]" />
+								<View className="bg-slate-400 w-32 h-full flex items-center justify-center rounded-full">
 									<Text
-										className=' color-white text-md'
+										className=" color-white text-md"
 										style={{ fontFamily: "DMBold" }}
 									>
 										PLANS
 									</Text>
 								</View>
-								<View className='border border-gray-500 w-[30vw]' />
+								<View className="border border-gray-500 w-[30vw]" />
 							</View>
 						</View>
-						<View className=' w-full  flex justify-center items-center'>
-							<View className='w-full px-5'>
+						<View className=" w-full  flex justify-center items-center">
+							<View className="w-full px-5">
 								{membershipType.map((item) => (
 									<View key={item.id}>
 										<LinearGradient
-											className='bg-gradient-to-r from-cyan-500 to-blue-500  w-full h-52 mb-5 flex flex-row rounded-xl p-2'
+											className="bg-gradient-to-r from-cyan-500 to-blue-500  w-full h-52 mb-5 flex flex-row rounded-xl p-2"
 											start={{ x: 0, y: 0.75 }}
 											end={{ x: 1, y: 0.25 }}
 											colors={item.color}
 										>
-											<View className='flex flex-row w-full border border-white rounded-xl'>
+											<View className="flex flex-row w-full border border-white rounded-xl">
 												<View
 													className={`
 												border-r border-white min-w-10 relative px-3 flex justify-center items-center `}
 												>
 													{/* <View className='flex flex-col justify-center items-center absolute border bottom-10'> */}
-													<IconCommunity
-														name={item.icon}
-														size={50}
-													/>
-													<Text className='mt-2'>
-														{item.name}
-													</Text>
+													<IconCommunity name={item.icon} size={50} />
+													<Text className="mt-2">{item.name}</Text>
 													{/* </View> */}
 												</View>
 												<View
 													className={` flex-1 flex flex-col justify-center items-center`}
 												>
-													<View className='flex-1  flex justify-center items-start flex-col'>
-														<Text className='color-white mb-2'>
+													<View className="flex-1  flex justify-center items-start flex-col">
+														<Text className="color-white mb-2">
 															<Text
-																className='text-3xl'
+																className="text-3xl"
 																style={{
-																	fontFamily:
-																		"DMBold",
+																	fontFamily: "DMBold",
 																}}
 															>
 																{item.price}€/
 															</Text>
 															<Text>Mon</Text>
 														</Text>
-														{item.benefits.map(
-															(item) => (
-																<View key={item} className='flex flex-row items-center gap-2 mb-2'>
-																	<Feather name='check-circle' />
-																	<Text>
-																		{item}
-																	</Text>
-																</View>
-															)
-														)}
+														{item.benefits.map((item) => (
+															<View
+																key={item}
+																className="flex flex-row items-center gap-2 mb-2"
+															>
+																<Feather name="check-circle" />
+																<Text>{item}</Text>
+															</View>
+														))}
 													</View>
-													<View className=' w-full pb-2 flex justify-end items-end px-4'>
+													<View className=" w-full pb-2 flex justify-end items-end px-4">
 														<TouchableOpacity
 															onPress={() => {
-																setUpgradeType(
-																	item.name
-																);
+																setUpgradeType(item.name);
 																handleGetAccessToken(
 																	item.name,
 																	item.price
 																);
 															}}
-															className=' w-fit flex flex-row gap-1 items-center'
+															className=" w-fit flex flex-row gap-1 items-center"
 														>
-															<Text>
-																Choose Plan
-															</Text>
-															<Icon
-																name='angle-right'
-																size={10}
-															/>
+															<Text>Choose Plan</Text>
+															<Icon name="angle-right" size={10} />
 														</TouchableOpacity>
 													</View>
 												</View>

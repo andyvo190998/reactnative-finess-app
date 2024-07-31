@@ -14,7 +14,7 @@ export const addUser = async (req, res) => {
         });
         return res.status(200).json("success");
     } catch (error) {
-        res.status(404).json(error);
+        return res.status(404).json(error);
     }
 };
 

@@ -9,7 +9,8 @@
     "ios": {
       "config": {
         "usesNonExemptEncryption": false
-      }
+      },
+      "bundleIdentifier": "com.andy123321.mybs"
     },
     "scheme": "acme",
     "web": {
@@ -27,7 +28,8 @@
           }
         }
       ],
-      "expo-router"
+      "expo-router",
+      "expo-font"
     ],
     "runtimeVersion": {
       "policy": "appVersion"

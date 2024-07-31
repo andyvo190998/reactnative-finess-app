@@ -10,19 +10,18 @@ import {
 	ActivityIndicator,
 	Alert,
 	BackHandler,
-	ImageBackground
+	ImageBackground,
 } from "react-native";
 import { SafeAreaView } from "react-native-safe-area-context";
 // import { useNavigation } from "@react-navigation/native";
 import { useAuth } from "@/app/context/AuthContext";
-import Modal from 'react-native-modal';
-import Icon from 'react-native-vector-icons/MaterialCommunityIcons';
+import Modal from "react-native-modal";
+import Icon from "react-native-vector-icons/MaterialCommunityIcons";
 import { appLogo } from "@/assets/works";
-
 
 const LoginScreen = ({ navigation }) => {
 	const { onLogin, authState, setToggleModal, toggleModal, handleRenewPassword } = useAuth();
-	const [isForgotPassword, setIsForgotPassword] = useState(false)
+	const [isForgotPassword, setIsForgotPassword] = useState(false);
 	const [isPasswordSecure, setIsPasswordSecure] = useState(true);
 	const [isRenewPasswordSecure, setIsRenewPasswordSecure] = useState(true);
 
@@ -39,78 +38,72 @@ const LoginScreen = ({ navigation }) => {
 	};
 
 	const handlePress = async () => {
-			setToggleModal(true)
-			if (isForgotPassword) {
-				if (loginForm.password !== loginForm.repeatPassword) {
-					Alert.alert(
-						'Request Fail',
-						'Password and repeat password are different!'
-					);
-					return
-				}
-				await handleRenewPassword(loginForm)
-			} else {
-				await onLogin(loginForm);
+		setToggleModal(true);
+		if (isForgotPassword) {
+			if (loginForm.password !== loginForm.repeatPassword) {
+				Alert.alert("Request Fail", "Password and repeat password are different!");
+				return;
 			}
-			// setLogin(true)
-	}
+			await handleRenewPassword(loginForm);
+		} else {
+			await onLogin(loginForm);
+		}
+		// setLogin(true)
+	};
 
 	useEffect(() => {
 		if (authState.authenticated) {
 			setLoginForm({
 				email: "",
 				password: "",
-				repeatPassword: ""
+				repeatPassword: "",
 			});
-			setToggleModal(false)
+			setToggleModal(false);
 			navigation.navigate("Home");
 		}
 	}, [authState]);
 
 	useEffect(() => {
 		if (isForgotPassword === true) {
-			setLoginForm(previous => ({
+			setLoginForm((previous) => ({
 				...previous,
-				repeatPassword: ''
-			}))
+				repeatPassword: "",
+			}));
 		}
-	}, [isForgotPassword])
+	}, [isForgotPassword]);
 
 	useEffect(() => {
 		const backAction = () => {
 			if (!authState.authenticated) {
 				Alert.alert("Hold on!", "Are you sure you want to exit the app?", [
-				  {
-					text: "Cancel",
-					onPress: () => null,
-					style: "cancel"
-				  },
-				  { text: "YES", onPress: () => BackHandler.exitApp() }
+					{
+						text: "Cancel",
+						onPress: () => null,
+						style: "cancel",
+					},
+					{ text: "YES", onPress: () => BackHandler.exitApp() },
 				]);
 				return true;
 			} else {
-				return false
+				return false;
 			}
 		};
 
-		const backHandler = BackHandler.addEventListener(
-		  "hardwareBackPress",
-		  backAction
-		);
+		const backHandler = BackHandler.addEventListener("hardwareBackPress", backAction);
 
 		return () => backHandler.remove();
-	  }, [authState]);
+	}, [authState]);
 
 	return (
 		<View style={{ flex: 1, backgroundColor: "#abebfc" }}>
 			<SafeAreaView style={{ flex: 1 }}>
-				<View className='h-1/3 flex justify-center items-center'>
+				<View className="h-1/3 flex justify-center items-center">
 					<Image
 						imageStyle={{ borderRadius: 5 }}
 						// className='w-full aspect-video flex flex-row rounded mb-2'
-						className='w-40 h-56'
+						className="w-40 h-56"
 						source={appLogo}
-						resizeMode='cover'
+						resizeMode="cover"
 					>
 						{/* <View
 							style={{
@@ -141,7 +134,7 @@ const LoginScreen = ({ navigation }) => {
 						</Text>
 						<TextInput
 							style={styles.inputField}
-							placeholder='Email'
+							placeholder="Email"
 							value={loginForm.email}
 							onChangeText={(text) => handleFormChange("email", text)}
 						/>
@@ -157,20 +150,21 @@ const LoginScreen = ({ navigation }) => {
 							Password
 						</Text>
 						<TextInput
-							inlineImageLeft='search_icon'
+							inlineImageLeft="search_icon"
 							style={styles.inputField}
 							secureTextEntry={isPasswordSecure}
-							placeholder='Password'
+							placeholder="Password"
 							value={loginForm.password}
-							onChangeText={(text) =>
-								handleFormChange("password", text)
-							}
+							onChangeText={(text) => handleFormChange("password", text)}
 						/>
-						<TouchableOpacity onPress={() => setIsPasswordSecure(!isPasswordSecure)} className='w-8 absolute right-1 bottom-4'>
+						<TouchableOpacity
+							onPress={() => setIsPasswordSecure(!isPasswordSecure)}
+							className="w-8 absolute right-1 bottom-4"
+						>
 							<Icon
-								name={isPasswordSecure ? 'eye' : 'eye-off'}
+								name={isPasswordSecure ? "eye" : "eye-off"}
 								size={20}
-								color={'grey'}
+								color={"grey"}
 							/>
 						</TouchableOpacity>
 					</View>
@@ -186,20 +180,21 @@ const LoginScreen = ({ navigation }) => {
 								Repeat password
 							</Text>
 							<TextInput
-								inlineImageLeft='search_icon'
+								inlineImageLeft="search_icon"
 								style={styles.inputField}
 								secureTextEntry={isRenewPasswordSecure}
-								placeholder='Repeat password'
+								placeholder="Repeat password"
 								value={loginForm.repeatPassword}
-								onChangeText={(text) =>
-									handleFormChange("repeatPassword", text)
-								}
+								onChangeText={(text) => handleFormChange("repeatPassword", text)}
 							/>
-							<TouchableOpacity onPress={() => setIsRenewPasswordSecure(!isRenewPasswordSecure)} className='w-8 absolute right-1 bottom-4'>
+							<TouchableOpacity
+								onPress={() => setIsRenewPasswordSecure(!isRenewPasswordSecure)}
+								className="w-8 absolute right-1 bottom-4"
+							>
 								<Icon
-									name={isRenewPasswordSecure ? 'eye' : 'eye-off'}
+									name={isRenewPasswordSecure ? "eye" : "eye-off"}
 									size={20}
-									color={'grey'}
+									color={"grey"}
 								/>
 							</TouchableOpacity>
 						</View>
@@ -209,7 +204,7 @@ const LoginScreen = ({ navigation }) => {
 						onPress={() => setIsForgotPassword(!isForgotPassword)}
 					>
 						<Text style={{ color: "gray", marginBottom: 5 }}>
-							{isForgotPassword ? 'Login' : 'Forgot Password?'}
+							{isForgotPassword ? "Login" : "Forgot Password?"}
 						</Text>
 					</TouchableOpacity>
 					<TouchableOpacity
@@ -221,14 +216,14 @@ const LoginScreen = ({ navigation }) => {
 						onPress={handlePress}
 						style={styles.loginBtn}
 					>
-						<Text className='font-xl font-bold text-center text-gray-700'>
-							{isForgotPassword ? 'Update Password' : 'Login'}
+						<Text className="font-xl font-bold text-center text-gray-700">
+							{isForgotPassword ? "Update Password" : "Login"}
 						</Text>
 					</TouchableOpacity>
 
 					{!isForgotPassword && (
 						<>
-							<Text className='text-xl text-gray-700 font-bold text-center py-5'>
+							<Text className="text-xl text-gray-700 font-bold text-center py-5">
 								Or
 							</Text>
 
@@ -257,9 +252,7 @@ const LoginScreen = ({ navigation }) => {
 								<Text style={{ color: "gray", fontWeight: "600" }}>
 									Don't have an account?
 								</Text>
-								<TouchableOpacity
-									onPress={() => navigation.navigate("Register")}
-								>
+								<TouchableOpacity onPress={() => navigation.navigate("Register")}>
 									<Text style={{ fontWeight: "600", color: "#eab308" }}>
 										{" "}
 										Sign Up
@@ -276,7 +269,7 @@ const LoginScreen = ({ navigation }) => {
 				// onBackdropPress={() => setToggleModal(false)}
 			>
 				<TouchableOpacity onPress={() => setToggleModal(false)}>
-					<View className='flex justify-center items-center'>
+					<View className="flex justify-center items-center">
 						<ActivityIndicator size="large" color="#00ff00" />
 					</View>
 				</TouchableOpacity>

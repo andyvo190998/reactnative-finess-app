@@ -22,6 +22,7 @@ LogBox.ignoreLogs(['new NativeEventEmitter']);
 LogBox.ignoreLogs(["VirtualizedLists should never be nested"]);
 import * as ScreenOrientation from "expo-screen-orientation";
 import { useAuth } from './context/AuthContext';
+import SystemNavigationBar from 'react-native-system-navigation-bar';
 
 
 const StackNav = ({ navigation }) => {
