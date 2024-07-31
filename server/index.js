@@ -21,10 +21,13 @@ const corsOptions = {
     optionsSuccessStatus: 200,
 };
 connectDB();
-
+const privateKey = JSON.parse(process.env.GOOGLE_PRIVATE_KEY || '{ privateKey: null }');
 const auth = new google.auth.GoogleAuth({
-    keyFile: './credential.json',
-    scopes: ['https://www.googleapis.com/auth/drive']
+    scopes: ['https://www.googleapis.com/auth/drive'],
+    credentials: {
+        private_key: privateKey.private_key,
+        client_email: process.env.GOOGLE_CLIENT_EMAIL,
+    }
 });
 
 // https://drive.google.com/uc?export=view&id=1V1z66ILlv5TMsi-spsZGphaRmamSbiin
