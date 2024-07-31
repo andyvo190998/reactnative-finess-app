@@ -22,6 +22,7 @@ const corsOptions = {
     optionsSuccessStatus: 200,
 };
 connectDB();
+console.log(private_key);
 const privateKey = JSON.parse(private_key || '{ "private_key": null }');
 console.log(privateKey);
 const auth = new google.auth.GoogleAuth({
