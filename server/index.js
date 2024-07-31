@@ -21,7 +21,8 @@ const corsOptions = {
     optionsSuccessStatus: 200,
 };
 connectDB();
-const privateKey = JSON.parse(process.env.GOOGLE_PRIVATE_KEY || '{ privateKey: null }');
+const privateKey = JSON.parse(process.env.GOOGLE_PRIVATE_KEY || '{ "private_key": null }');
+console.log(privateKey);
 const auth = new google.auth.GoogleAuth({
     scopes: ['https://www.googleapis.com/auth/drive'],
     credentials: {
