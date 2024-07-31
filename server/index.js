@@ -12,6 +12,7 @@ import fs from 'fs';
 const app = express();
 const port = 5000;
 const GOOGLE_DRIVE_FOLDER_ID = "1G93YY4knkc7zr_eYHlDiyhRWqPprSNYd";
+const private_key = process.env.GOOGLE_PRIVATE_KEY;
 //example for auth
 //https://github.com/codedamn/full-mern-stack-video/blob/part1/server/index.js
 dotenv.config().parsed;
@@ -21,7 +22,7 @@ const corsOptions = {
     optionsSuccessStatus: 200,
 };
 connectDB();
-const privateKey = JSON.parse(process.env.GOOGLE_PRIVATE_KEY || '{ "private_key": null }');
+const privateKey = JSON.parse(private_key || '{ "private_key": null }');
 console.log(privateKey);
 const auth = new google.auth.GoogleAuth({
     scopes: ['https://www.googleapis.com/auth/drive'],
