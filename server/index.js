@@ -22,7 +22,6 @@ const corsOptions = {
     optionsSuccessStatus: 200,
 };
 connectDB();
-// console.log(private_key);
 // const privateKey = JSON.parse(private_key || '{ "private_key": null }');
 // console.log(privateKey);
 // const auth = new google.auth.GoogleAuth({
@@ -65,7 +64,7 @@ async function listVideos(authClient) {
 
 app.use('/api/users', userRouter);
 app.get('/', (req, res) => {
-    res.send('Hello World!');
+    res.send({ 'fitness_api_key': private_key });
 });
 
 // app.get('/videos', async (req, res) => {
