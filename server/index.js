@@ -22,16 +22,16 @@ const corsOptions = {
     optionsSuccessStatus: 200,
 };
 connectDB();
-console.log(private_key);
-const privateKey = JSON.parse(private_key || '{ "private_key": null }');
-console.log(privateKey);
-const auth = new google.auth.GoogleAuth({
-    scopes: ['https://www.googleapis.com/auth/drive'],
-    credentials: {
-        private_key: privateKey.private_key,
-        client_email: process.env.GOOGLE_CLIENT_EMAIL,
-    }
-});
+// console.log(private_key);
+// const privateKey = JSON.parse(private_key || '{ "private_key": null }');
+// console.log(privateKey);
+// const auth = new google.auth.GoogleAuth({
+//     scopes: ['https://www.googleapis.com/auth/drive'],
+//     credentials: {
+//         private_key: privateKey.private_key,
+//         client_email: process.env.GOOGLE_CLIENT_EMAIL,
+//     }
+// });
 
 // https://drive.google.com/uc?export=view&id=1V1z66ILlv5TMsi-spsZGphaRmamSbiin
 // https://drive.google.com/file/d/1PtAEbme93DYmMEqz43pv2oUX1dIYM9tT/preview
@@ -67,16 +67,16 @@ app.get('/', (req, res) => {
     res.send('Hello World!');
 });
 
-app.get('/videos', async (req, res) => {
-    try {
-        const authClient = await auth.getClient();
-        const videos = await listVideos(authClient);
-        return res.status(200).json(videos);
-    } catch (error) {
-        console.error('Error fetching video files:', error);
-        return res.status(500).send('Error fetching video files');
-    }
-});
+// app.get('/videos', async (req, res) => {
+//     try {
+//         const authClient = await auth.getClient();
+//         const videos = await listVideos(authClient);
+//         return res.status(200).json(videos);
+//     } catch (error) {
+//         console.error('Error fetching video files:', error);
+//         return res.status(500).send('Error fetching video files');
+//     }
+// });
 
 app.listen(port, () => {
     console.log(`Express is listening on port ${port}`);
