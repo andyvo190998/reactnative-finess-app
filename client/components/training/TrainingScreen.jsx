@@ -110,7 +110,7 @@ const TrainingScreen = ({ navigation, route }) => {
 				setTimeout(() => setUnit((previous) => previous + 1), 0);
 				setTimeout(() => setCount(1), 0);
 				setTimeout(() => setMode("Long Break"), 0);
-				setTimeout(() => setTime(5), 0);
+				setTimeout(() => setTime(45), 0);
 			} else {
 				await handleComplete();
 			}
@@ -128,7 +128,7 @@ const TrainingScreen = ({ navigation, route }) => {
 				video.current.playAsync();
 			}
 			if (count !== 0) {
-				setTimeout(() => setTime(5), 0);
+				setTimeout(() => setTime(45), 0);
 			}
 		} else if (mode === "Long Break") {
 			setTimeout(() => setMode("Get Ready"), 0);

@@ -1,49 +1,52 @@
 {
-  "expo": {
-    "splash": {
-      "image": "./assets/images/app-logo.png",
-      "backgroundColor": "#FFFFFF",
-      "resizeMode": "contain"
-    },
-    "icon": "./assets/images/app-logo.png",
-    "ios": {
-      "config": {
-        "usesNonExemptEncryption": false
-      },
-      "bundleIdentifier": "com.andy123321.mybs"
-    },
-    "scheme": "acme",
-    "web": {
-      "bundler": "metro"
-    },
-    "name": "mybs",
-    "slug": "fitness",
-    "plugins": [
-      "expo-secure-store",
-      [
-        "expo-build-properties",
-        {
-          "android": {
-            "usesCleartextTraffic": true
-          }
-        }
-      ],
-      "expo-router",
-      "expo-font"
-    ],
-    "runtimeVersion": {
-      "policy": "appVersion"
-    },
-    "android": {
-      "package": "com.andy123321.mybs"
-    },
-    "extra": {
-      "router": {
-        "origin": false
-      },
-      "eas": {
-        "projectId": "120a655b-4ca0-4c69-8439-d9da12b3a731"
-      }
-    }
-  }
+	"expo": {
+		"splash": {
+			"image": "./assets/images/app-logo.png",
+			"backgroundColor": "#FFFFFF",
+			"resizeMode": "contain"
+		},
+		"icon": "./assets/images/app-logo.png",
+		"ios": {
+			"config": {
+				"usesNonExemptEncryption": false
+			},
+			"bundleIdentifier": "com.andy123321.mybs"
+		},
+		"scheme": "acme",
+		"web": {
+			"bundler": "metro"
+		},
+		"name": "mybs",
+		"slug": "fitness",
+		"plugins": [
+			"expo-secure-store",
+			[
+				"expo-build-properties",
+				{
+					"android": {
+						"usesCleartextTraffic": true
+					}
+				}
+			],
+			"expo-router",
+			"expo-font"
+		],
+		"runtimeVersion": {
+			"policy": "appVersion"
+		},
+		"android": {
+			"package": "com.andy123321.mybs"
+		},
+		"extra": {
+			"router": {
+				"origin": false
+			},
+			"eas": {
+				"projectId": "120a655b-4ca0-4c69-8439-d9da12b3a731"
+			}
+		},
+		"androidNavigationBar": {
+			"visible": "sticky-immersive"
+		}
+	}
 }
