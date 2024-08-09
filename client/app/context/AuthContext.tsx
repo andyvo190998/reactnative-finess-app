@@ -1,11 +1,11 @@
-import { createContext, useContext, useEffect, useState } from 'react';
-import axios from 'axios';
-import * as SecureStore from 'expo-secure-store';
-import { jwtDecode } from 'jwt-decode';
-import 'core-js/stable/atob';
-import { Alert } from 'react-native';
+import { createContext, useContext, useEffect, useState } from "react";
+import axios from "axios";
+import * as SecureStore from "expo-secure-store";
+import { jwtDecode } from "jwt-decode";
+import "core-js/stable/atob";
+import { Alert } from "react-native";
 // @ts-ignore: Unreachable code error
-import { EXPRESS_API } from '@env';
+import { EXPRESS_API } from "@env";
 
 interface AuthProps {
 	authState?: { token: string | null; authenticated: boolean | null };
@@ -19,13 +19,17 @@ interface AuthProps {
 		trialEndDate: string | null;
 		membership: string | null;
 	};
-	setToggleModal?: (prop: boolean) => void,
-	toggleModal?: boolean,
-	handleRenewPassword?: (loginForm: {email: string, password: string, repeatPassword?: string}) => Promise<any>
+	setToggleModal?: (prop: boolean) => void;
+	toggleModal?: boolean;
+	handleRenewPassword?: (loginForm: {
+		email: string;
+		password: string;
+		repeatPassword?: string;
+	}) => Promise<any>;
 }
 
-const TOKEN_KEY = 'access_token';
-export const API_URL = '';
+const TOKEN_KEY = "access_token";
+export const API_URL = "";
 const AuthContext = createContext<AuthProps>({});
 
 export const useAuth = () => {
@@ -54,13 +58,11 @@ export const AuthProvider = ({ children }: any) => {
 	});
 	const [toggleModal, setToggleModal] = useState<boolean>(false);
 
-	const handleLogin = async (loginForm: {
-		email: string;
-		password: string;
-	}) => {
+	const handleLogin = async (loginForm: { email: string; password: string }) => {
 		await axios
-			.post(`${'https://reactnative-finess-app.vercel.app'}/api/users/login`, loginForm)
+			.post(`${"https://reactnative-finess-app.vercel.app"}/api/users/login`, loginForm)
 			.then(async (res) => {
+				console.log(res.data);
 				const token = res.data.token;
 				setAuthState({
 					token: token,
@@ -74,20 +76,15 @@ export const AuthProvider = ({ children }: any) => {
 					trialEndDate: user.trialEndDate,
 					membership: user.membership,
 				});
-				axios.defaults.headers.common[
-					'Authorization'
-				] = `Bearer ${token}`;
+				axios.defaults.headers.common["Authorization"] = `Bearer ${token}`;
 				await SecureStore.setItemAsync(TOKEN_KEY, token);
-				setToggleModal(false)
+				setToggleModal(false);
 				return true;
 			})
 			.catch((error) => {
-				Alert.alert(
-					'Login Fail',
-					'Please check your account and login again!'
-				);
-				setAuthState(authState)
-				setToggleModal(false)
+				Alert.alert("Login Fail", "Please check your account and login again!");
+				setAuthState(authState);
+				setToggleModal(false);
 				return false;
 			});
 	};
@@ -95,7 +92,7 @@ export const AuthProvider = ({ children }: any) => {
 	const handleLogOut = async () => {
 		await SecureStore.deleteItemAsync(TOKEN_KEY);
 
-		axios.defaults.headers.common['Authorization'] = '';
+		axios.defaults.headers.common["Authorization"] = "";
 
 		setAuthState({
 			token: null,
@@ -110,37 +107,32 @@ export const AuthProvider = ({ children }: any) => {
 	};
 
 	const handleRenewPassword = async (loginForm: {
-		email: string,
-		password: string,
-		repeatPassword?: string
+		email: string;
+		password: string;
+		repeatPassword?: string;
 	}) => {
 		await axios
-		.put(`${'https://reactnative-finess-app.vercel.app'}/api/users/renewpassword`, loginForm)
-		.then(async (res) => {
-			setToggleModal(false)
-			Alert.alert(
-				'Update Success',
-				'Your password has been changed!'
-			);
-			return true
-		})
-		.catch((error) => {
-			Alert.alert(
-				'Request Fail',
-				'Please try again!'
-			);
-			setToggleModal(false)
-			return false;
-		});
-	}
+			.put(
+				`${"https://reactnative-finess-app.vercel.app"}/api/users/renewpassword`,
+				loginForm
+			)
+			.then(async (res) => {
+				setToggleModal(false);
+				Alert.alert("Update Success", "Your password has been changed!");
+				return true;
+			})
+			.catch((error) => {
+				Alert.alert("Request Fail", "Please try again!");
+				setToggleModal(false);
+				return false;
+			});
+	};
 
 	useEffect(() => {
 		const loadToken = async () => {
 			const token = await SecureStore.getItemAsync(TOKEN_KEY);
 			if (token) {
-				axios.defaults.headers.common[
-					'Authorization'
-				] = `Bearer ${token}`;
+				axios.defaults.headers.common["Authorization"] = `Bearer ${token}`;
 				try {
 					const decoded = jwtDecode(token);
 					// @ts-ignore: Unreachable code error
@@ -166,7 +158,7 @@ export const AuthProvider = ({ children }: any) => {
 		};
 		loadToken();
 	}, []);
-	const test = '123';
+	const test = "123";
 	const value = {
 		toggleModal: toggleModal,
 		authState: authState,
@@ -178,10 +170,8 @@ export const AuthProvider = ({ children }: any) => {
 		onLogOut: handleLogOut,
 		setUserInfo: setUserInfo,
 		setToggleModal: setToggleModal,
-		handleRenewPassword: handleRenewPassword
+		handleRenewPassword: handleRenewPassword,
 	};
 
-	return (
-		<AuthContext.Provider value={value}>{children}</AuthContext.Provider>
-	);
+	return <AuthContext.Provider value={value}>{children}</AuthContext.Provider>;
 };

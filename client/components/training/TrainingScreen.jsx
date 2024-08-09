@@ -65,7 +65,7 @@ const TrainingScreen = ({ navigation, route }) => {
 	const [toggleModal, setToggleModal] = useState(false);
 	const [shouldPlay, setShouldPlay] = useState(true);
 	const [dimensions, setDimensions] = useState(Dimensions.get("window"));
-	const [time, setTime] = useState(15);
+	const [time, setTime] = useState(5);
 	const [mode, setMode] = useState("Get Ready");
 	const [isPaused, setIsPaused] = useState(false);
 	const [onReset, setOnReset] = useState(false);
@@ -110,7 +110,7 @@ const TrainingScreen = ({ navigation, route }) => {
 				setTimeout(() => setUnit((previous) => previous + 1), 0);
 				setTimeout(() => setCount(1), 0);
 				setTimeout(() => setMode("Long Break"), 0);
-				setTimeout(() => setTime(45), 0);
+				setTimeout(() => setTime(5), 0);
 			} else {
 				await handleComplete();
 			}
@@ -128,7 +128,7 @@ const TrainingScreen = ({ navigation, route }) => {
 				video.current.playAsync();
 			}
 			if (count !== 0) {
-				setTimeout(() => setTime(45), 0);
+				setTimeout(() => setTime(5), 0);
 			}
 		} else if (mode === "Long Break") {
 			setTimeout(() => setMode("Get Ready"), 0);
@@ -167,6 +167,18 @@ const TrainingScreen = ({ navigation, route }) => {
 		setOnReset(true);
 	};
 
+	function getRandomVideos(arr, numItems) {
+		// Shuffle the array
+		let shuffledArray = arr.slice(); // Create a shallow copy of the array
+		for (let i = shuffledArray.length - 1; i > 0; i--) {
+			const j = Math.floor(Math.random() * (i + 1));
+			[shuffledArray[i], shuffledArray[j]] = [shuffledArray[j], shuffledArray[i]];
+		}
+
+		// Return the first `numItems` items from the shuffled array
+		return shuffledArray.slice(0, numItems);
+	}
+
 	useEffect(() => {
 		const downloadVideo = async (id) => {
 			const googleDriveUri = `https://drive.google.com/uc?export=view&id=${id}`;
@@ -186,8 +198,8 @@ const TrainingScreen = ({ navigation, route }) => {
 			axios
 				.get("https://reactnative-finess-app.vercel.app/videos")
 				.then(function (response) {
-					const suffledData = shuffleArray(response.data);
-					suffledData.forEach((item) => {
+					const randomVideosList = getRandomVideos(response.data, 5);
+					randomVideosList.forEach((item) => {
 						downloadVideo(item.id);
 					});
 				})
