@@ -1,5 +1,5 @@
 import React, { useEffect, useState } from "react";
-import { View, Text, TextInput, TouchableOpacity, Image, FlatList, Alert } from "react-native";
+import { View, Text, TouchableOpacity, FlatList, Alert } from "react-native";
 
 import styles from "./welcome.style";
 import { SIZES } from "@/constants";
@@ -7,19 +7,31 @@ import Icon from "react-native-vector-icons/MaterialCommunityIcons";
 import { useAuth } from "@/app/context/AuthContext";
 import * as ScreenOrientation from "expo-screen-orientation";
 import axios from "axios";
-
-const Welcome = ({ setTrainingLevel, navigation }) => {
+import Modal from "react-native-modal";
+const TrainingLevel = ({ setTrainingLevel, navigation }) => {
 	const { userInfo, setUserInfo } = useAuth();
 
-	const trainingType = ["Beginner", "Advanced", "Pro"];
+	const trainingType = [
+		{
+			name: "Beginner",
+			icon: "emoticon-excited-outline",
+		},
+		{
+			name: "Advanced",
+			icon: "emoticon-wink-outline",
+		},
+		{
+			name: "Pro",
+			icon: "emoticon-devil-outline",
+		},
+		{
+			name: "Custom",
+			icon: "circle-edit-outline",
+		},
+	];
 	const [activeJobType, setActiveJobType] = useState("Beginner");
 	const [isAllowedUser, setIsAllowedUser] = useState(null);
-
-	const icons = {
-		Beginner: "emoticon-excited-outline",
-		Advanced: "emoticon-wink-outline",
-		Pro: "emoticon-devil-outline",
-	};
+	const [openCustom, setOpenCustom] = useState(false);
 
 	const handleCheckTrial = (userRegisterDate) => {
 		if (!userRegisterDate) {
@@ -56,11 +68,44 @@ const Welcome = ({ setTrainingLevel, navigation }) => {
 			});
 	};
 
+	const handleSelectLevel = (item) => {
+		if (!isAllowedUser) {
+			Alert.alert("Trial Period was expired", "Please upgrade your subscription", [
+				{
+					text: "Cancel",
+					style: "cancel",
+				},
+				{
+					text: "extend trial",
+					onPress: () => handleExtendTrial(),
+					style: "cancel",
+				},
+			]);
+			return;
+		}
+
+		if (item.name === "Custom") {
+			setOpenCustom(true);
+			return;
+		}
+		setActiveJobType(item.name);
+		setTrainingLevel(item.name);
+
+		navigation.navigate("Training", {
+			trainingLevel: item.name,
+			units: item.name === "Beginner" ? 2 : item.name === "Advanced" ? 3 : 4,
+		});
+		ScreenOrientation.lockAsync(ScreenOrientation.OrientationLock.LANDSCAPE);
+	};
+
 	useEffect(() => {
 		if (userInfo.membership === "Free Trial") {
 			handleCheckTrial(userInfo.trialEndDate);
+		} else {
+			setIsAllowedUser(true);
 		}
 	}, [userInfo]);
+
 	return (
 		<View>
 			<View style={styles.container}>
@@ -74,55 +119,32 @@ const Welcome = ({ setTrainingLevel, navigation }) => {
 					renderItem={({ item }) => {
 						return (
 							<TouchableOpacity
-								onPress={() => {
-									if (!isAllowedUser) {
-										Alert.alert(
-											"Trial Period was expired",
-											"Please upgrade your subscription",
-											[
-												{
-													text: "Cancel",
-													onPress: () => Alert.alert("Cancel Pressed"),
-													style: "cancel",
-												},
-												{
-													text: "extend trial",
-													onPress: () => handleExtendTrial(),
-													style: "cancel",
-												},
-											]
-										);
-										return;
-									}
-									setActiveJobType(item);
-									setTrainingLevel(item);
-
-									navigation.navigate("Training", {
-										trainingLevel: item,
-										units:
-											item === "Beginner" ? 2 : item === "Advanced" ? 3 : 4,
-									});
-									ScreenOrientation.lockAsync(
-										ScreenOrientation.OrientationLock.LANDSCAPE
-									);
-								}}
-								style={styles.tab(activeJobType, item)}
+								onPress={() => handleSelectLevel(item)}
+								style={styles.tab(activeJobType, item.name)}
 							>
-								<Icon name={icons[item]} size={30} color={"#ff9a00"} />
-								<Text className="ml-1" style={styles.tabText(activeJobType, item)}>
-									{item}
+								<Icon name={item.icon} size={30} color={"#ff9a00"} />
+								<Text
+									className="ml-1"
+									style={styles.tabText(activeJobType, item.name)}
+								>
+									{item.name}
 								</Text>
 							</TouchableOpacity>
 						);
 					}}
-					keyExtractor={(item) => item}
+					keyExtractor={(item) => item.name}
 					contentContainerStyle={{ columnGap: SIZES.small }}
 					horizontal
 					showsHorizontalScrollIndicator={false}
 				/>
 			</View>
+			<Modal isVisible={openCustom} onBackdropPress={() => setOpenCustom(false)}>
+				<View className="flex flex-col bg-white justify-center p-2 rounded-lg">
+					<Text>Hello world</Text>
+				</View>
+			</Modal>
 		</View>
 	);
 };
 
-export default Welcome;
+export default TrainingLevel;

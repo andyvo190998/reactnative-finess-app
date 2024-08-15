@@ -1,7 +1,7 @@
 import ScreenHeaderBtn from "./common/header/ScreenHeaderBtn";
 
 // home screen
-import Welcome from "./home/welcome/Welcome";
+import TrainingLevel from "./home/training-level/TrainingLevel";
 import TrainingList from "./home/training-list/TrainingList";
 import DrawerContent from './drawer-content/DrawerContent.jsx';
 import StartingPage from './login/StartingPage.jsx';
@@ -16,7 +16,7 @@ import Subscription from './profile/Subscription.jsx';
 
 export {
     ScreenHeaderBtn,
-    Welcome,
+    TrainingLevel,
     TrainingList,
     DrawerContent,
     StartingPage,

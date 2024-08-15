@@ -9,41 +9,15 @@ import {
 	ActivityIndicator,
 } from "react-native";
 import Icon from "react-native-vector-icons/MaterialCommunityIcons";
-import { trainingImage, trainingVideos } from "@/assets/works";
+import { trainingImage } from "@/assets/works";
 import Modal from "react-native-modal";
 import { ResizeMode, Video } from "expo-av";
 import * as FileSystem from "expo-file-system";
 
-const TrainingList = ({ navigation, trainingLevel }) => {
-	const dummyData = [
-		{
-			uri: "https://images.pexels.com/photos/841130/pexels-photo-841130.jpeg?auto=compress&cs=tinysrgb&w=1260&h=750&dpr=1",
-			time: "10 min",
-			id: "10",
-			trainingLevel: "Beginner",
-			units: "2",
-		},
-		{
-			uri: "https://images.pexels.com/photos/949126/pexels-photo-949126.jpeg?auto=compress&cs=tinysrgb&w=1260&h=750&dpr=1",
-			time: "20 min",
-			id: "20",
-			trainingLevel: "Advanced",
-			units: "3",
-		},
-		{
-			uri: "https://images.pexels.com/photos/136410/pexels-photo-136410.jpeg?auto=compress&cs=tinysrgb&w=1260&h=750&dpr=1",
-			time: "30 min",
-			id: "30",
-			trainingLevel: "Pro",
-			units: "4",
-		},
-	];
-
+const TrainingList = () => {
 	const styles = StyleSheet.create({
 		video: {
 			alignSelf: "center",
-			//   width: 200,
-			//   height: 200,
 			aspectRatio: 16 / 9,
 		},
 	});
@@ -123,10 +97,8 @@ const TrainingList = ({ navigation, trainingLevel }) => {
 							ref={video}
 							style={{
 								...styles.video,
-								// width: Dimensions.get("window").width
 							}}
 							className="w-full"
-							// source={trainingVideos[0]}
 							source={{
 								uri: "https://drive.google.com/uc?export=view&id=1aGrFxSYcisNA2acxTHBerN2akphmTqoI",
 							}}
