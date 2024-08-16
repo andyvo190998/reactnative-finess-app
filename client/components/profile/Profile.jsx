@@ -198,6 +198,7 @@ const Profile = () => {
 			img: work2,
 		},
 	];
+
 	return (
 		<ScrollView
 			className=" bg-[#1c1c1d]"
@@ -205,18 +206,22 @@ const Profile = () => {
 			showsHorizontalScrollIndicator={false}
 		>
 			<View className="flex justify-center items-center h-full">
-				<View className=" w-full flex justify-center items-center flex-row pt-20 px-5 mb-5">
-					<View className="border-2 border-slate-50 w-24 h-24 rounded-full flex justify-center items-center">
-						<Image
-							resizeMode="contain"
-							source={images.profile}
-							className="rounded-full"
-							style={{
-								width: "100%",
-								height: undefined,
-								aspectRatio: 1,
-							}}
-						/>
+				<View className=" w-full flex justify-center items-center flex-row pt-5 px-5 mb-5">
+					<View className="border-2 bg-slate-50 border-slate-50 w-24 h-24 rounded-full flex justify-center items-center">
+						{userInfo.avatar ? (
+							<Image
+								resizeMode="contain"
+								source={{ uri: userInfo.avatar }}
+								className="rounded-full"
+								style={{
+									width: "100%",
+									height: undefined,
+									aspectRatio: 1,
+								}}
+							/>
+						) : (
+							<Icon3 name="user-circle" size={40} />
+						)}
 					</View>
 					<View className="flex-1 mx-3  flex justify-center">
 						<Text

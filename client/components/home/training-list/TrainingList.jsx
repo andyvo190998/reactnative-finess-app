@@ -11,7 +11,6 @@ import {
 } from "react-native";
 import Icon from "react-native-vector-icons/MaterialCommunityIcons";
 import MaterialIcons from "react-native-vector-icons/MaterialIcons";
-import { trainingImage } from "@/assets/works";
 import Modal from "react-native-modal";
 import { ResizeMode, Video } from "expo-av";
 import * as FileSystem from "expo-file-system";

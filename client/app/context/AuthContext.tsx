@@ -62,7 +62,6 @@ export const AuthProvider = ({ children }: any) => {
 		await axios
 			.post(`${"https://reactnative-finess-app.vercel.app"}/api/users/login`, loginForm)
 			.then(async (res) => {
-				console.log(res.data);
 				const token = res.data.token;
 				setAuthState({
 					token: token,

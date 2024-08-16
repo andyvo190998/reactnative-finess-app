@@ -3,11 +3,16 @@ import { TouchableOpacity, Image } from "react-native";
 
 import styles from "./screenheader.style";
 import { Text } from "react-native-paper";
+import Icon from "react-native-vector-icons/FontAwesome";
 
-const ScreenHeaderBtn = ({ iconUrl, dimension, handlePress }) => {
+const ScreenHeaderBtn = ({ iconUrl, dimension, handlePress, isAvatar }) => {
 	return (
 		<TouchableOpacity style={styles.btnContainer} onPress={handlePress}>
-			<Image source={iconUrl} resizeMode="cover" style={styles.btnImg(dimension)} />
+			{isAvatar ? (
+				<Icon name="user-circle" size={30} />
+			) : (
+				<Image source={iconUrl} resizeMode="cover" style={styles.btnImg(dimension)} />
+			)}
 		</TouchableOpacity>
 	);
 };

@@ -43,7 +43,7 @@ const StackNav = ({ navigation }) => {
                         <ScreenHeaderBtn iconUrl={icons.menu} dimension="60%" handlePress={handlePress} />
                     ),
                     headerRight: () => (
-                        <ScreenHeaderBtn handlePress={handleNavigateHome} iconUrl={images.profile} dimension="100%" />
+                        <ScreenHeaderBtn handlePress={handleNavigateHome} isAvatar={true} iconUrl={images.profile} dimension="100%" />
                     ),
                     headerTitle: '',
                     headerShown: true,
