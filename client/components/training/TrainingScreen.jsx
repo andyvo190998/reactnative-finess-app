@@ -22,7 +22,6 @@ import * as ScreenOrientation from "expo-screen-orientation";
 import Icon from "react-native-vector-icons/MaterialCommunityIcons";
 import { useKeepAwake } from "expo-keep-awake";
 import * as FileSystem from "expo-file-system";
-import { useRequest } from "../hooks/useRequest";
 import axios from "axios";
 import SystemNavigationBar from "react-native-system-navigation-bar";
 
