@@ -111,15 +111,11 @@ const TrainingList = () => {
 			>
 				<View className="flex flex-col bg-white justify-center p-2 rounded-lg">
 					<Text className="text-lg font-bold mb-2">{selectedExercise.name}</Text>
-					<Text>
+					<Text className="mb-2">
 						This is instruction text: Lorem ipsum dolor sit amet consectetur adipisicing
 						elit. Nemo facilis excepturi deserunt sit debitis reprehenderit repudiandae
 						labore laborum voluptatem similique, repellendus sed a illo autem tempora
 						dignissimos eveniet pariatur? Est.
-					</Text>
-					<Text className="my-2 font-bold">
-						Demo video. (just make an example and it will later change dynamically based
-						on selected exercise)
 					</Text>
 					{!selectedExercise.id ? (
 						<Text className="color-red-500">Image Not Found</Text>

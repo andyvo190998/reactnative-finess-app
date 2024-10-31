@@ -23,7 +23,6 @@ import Icon from "react-native-vector-icons/MaterialCommunityIcons";
 import { useKeepAwake } from "expo-keep-awake";
 import * as FileSystem from "expo-file-system";
 import axios from "axios";
-import SystemNavigationBar from "react-native-system-navigation-bar";
 
 const styles = StyleSheet.create({
 	container: {
@@ -70,9 +69,7 @@ const TrainingScreen = ({ navigation, route }) => {
 	const [mode, setMode] = useState("Get Ready");
 	const [isPaused, setIsPaused] = useState(false);
 	const [onReset, setOnReset] = useState(false);
-	const [isLoading, setIsLoading] = useState(true);
 	const [queriedVideos, setQueriedVideos] = useState([]);
-
 	// Hide bottom bar
 	const hideNavBar = async () => {
 		// Prevent content from moving up when bar is shown
@@ -82,17 +79,6 @@ const TrainingScreen = ({ navigation, route }) => {
 		// Show the bar when user swipes
 		await NavigationBar.setBehaviorAsync("overlay-swipe");
 	};
-
-	function shuffleArray(array) {
-		let arrayCopy = [...array];
-		for (var i = arrayCopy.length - 1; i > 0; i--) {
-			var j = Math.floor(Math.random() * (i + 1));
-			var temp = arrayCopy[i];
-			arrayCopy[i] = arrayCopy[j];
-			arrayCopy[j] = temp;
-		}
-		return arrayCopy;
-	}
 
 	const video = useRef(null);
 
@@ -107,6 +93,12 @@ const TrainingScreen = ({ navigation, route }) => {
 		await sound.playAsync();
 	};
 
+	const stopSound = async () => {
+		const { sound } = await Audio.Sound.createAsync(soundSource);
+
+		await sound.stopAsync();
+	};
+
 	const playRandomVideo = async () => {
 		if (videoList) {
 			setTimeout(() => setVideoToPlay(videoList[count - 1]), 0);
@@ -116,7 +108,6 @@ const TrainingScreen = ({ navigation, route }) => {
 	const handleOnfinish = async () => {
 		if (count > 5) {
 			if (unit < maxUnits) {
-				// await playRandomVideo()
 				setTimeout(() => setVideoToPlay(relaxVideo), 0);
 				setTimeout(() => setUnit((previous) => previous + 1), 0);
 				setTimeout(() => setCount(1), 0);
@@ -159,9 +150,33 @@ const TrainingScreen = ({ navigation, route }) => {
 		setVideoList((previous) => {
 			if (previous[0]) {
 				setVideoToPlay(previous[0]);
+				setShouldPlay(true);
 			}
 			return [...previous, fileUri];
 		});
+	};
+
+	const deleteFiles = async () => {
+		try {
+			// Use Promise.all to delete all files concurrently
+			await Promise.all(
+				videoList.map(async (fileUri) => {
+					const fileInfo = await FileSystem.getInfoAsync(fileUri);
+
+					if (fileInfo.exists) {
+						await FileSystem.deleteAsync(fileUri);
+						console.log(`Deleted file: ${fileUri}`);
+					} else {
+						console.log(`File does not exist: ${fileUri}`);
+					}
+				})
+			);
+			setVideoList([]);
+			setVideoToPlay(null);
+			console.log("All files deleted successfully");
+		} catch (error) {
+			console.error("Error deleting files:", error);
+		}
 	};
 
 	function getRandomVideos(arr, numItems) {
@@ -177,8 +192,6 @@ const TrainingScreen = ({ navigation, route }) => {
 	}
 
 	const handleComplete = async () => {
-		// const suffledArr = shuffleArray(trainingVideos);
-		// setTimeout(() => setVideoList(suffledArr), 0);
 		setTimeout(() => {
 			let shuffledArray = queriedVideos.slice(); // Create a shallow copy of the array
 			for (let i = shuffledArray.length - 1; i > 0; i--) {
@@ -213,11 +226,14 @@ const TrainingScreen = ({ navigation, route }) => {
 		setTimeout(() => setShouldPlay(false), 0);
 	};
 
-	const handleBackButtonClick = () => {
+	const handleBackButtonClick = async () => {
+		setVideoToPlay(null);
+		await deleteFiles();
 		ScreenOrientation.lockAsync(ScreenOrientation.OrientationLock.PORTRAIT);
 		navigation.goBack();
 		setShouldPlay(false);
 		setIsPaused(true);
+		stopSound();
 		return true;
 	};
 
@@ -229,25 +245,6 @@ const TrainingScreen = ({ navigation, route }) => {
 		setTime(15);
 		setOnReset(true);
 	};
-
-	useEffect(() => {
-		const doRequest = async () => {
-			axios
-				.get("https://reactnative-finess-app.vercel.app/api/training/videos")
-				.then(function (response) {
-					setQueriedVideos(response.data);
-					const randomVideosList = getRandomVideos(response.data, 5);
-					randomVideosList.forEach((item) => {
-						downloadVideo(item.id);
-					});
-					setIsLoading(false);
-				})
-				.catch(function (error) {
-					console.log(error);
-				});
-		};
-		doRequest();
-	}, []);
 
 	useEffect(() => {
 		const updateDimensions = () => {
@@ -265,8 +262,23 @@ const TrainingScreen = ({ navigation, route }) => {
 	}, []);
 
 	useEffect(() => {
-		setShouldPlay(true);
 		setIsPaused(false);
+
+		const doRequest = async () => {
+			axios
+				.get("https://reactnative-finess-app.vercel.app/api/training/videos")
+				.then(function (response) {
+					setQueriedVideos(response.data);
+					const randomVideosList = getRandomVideos(response.data, 5);
+					randomVideosList.forEach(async (item) => {
+						await downloadVideo(item.id);
+					});
+				})
+				.catch(function (error) {
+					console.log(error);
+				});
+		};
+		doRequest();
 	}, [route]);
 
 	useEffect(() => {
@@ -290,7 +302,7 @@ const TrainingScreen = ({ navigation, route }) => {
 
 	return (
 		<View style={styles.container}>
-			{isLoading ? (
+			{!videoToPlay ? (
 				<View className="w-full h-full flex flex-col gap-2 justify-center items-center">
 					<ActivityIndicator size="large" color="#0000ff" />
 					<Text className="color-slate-50">Loading...</Text>
