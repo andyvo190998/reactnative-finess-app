@@ -1,5 +1,5 @@
 import { View, StyleSheet, Alert } from "react-native";
-import React from "react";
+import React, { useState } from "react";
 import { DrawerContentScrollView, DrawerItem } from "@react-navigation/drawer";
 import {
 	Avatar,
@@ -14,9 +14,12 @@ import {
 import Icon from "react-native-vector-icons/MaterialCommunityIcons";
 import Icon1 from "react-native-vector-icons/Ionicons";
 import { useAuth } from "@/app/context/AuthContext";
+import Modal from "react-native-modal";
+import { Calendar, LocaleConfig } from "react-native-calendars";
 
 const DrawerContent = (props) => {
 	const { onLogOut } = useAuth();
+	const [openStreak, setOpenStreak] = useState();
 	return (
 		<View style={{ flex: 1 }}>
 			<DrawerContentScrollView {...props}>
@@ -34,11 +37,19 @@ const DrawerContent = (props) => {
 						</View>
 
 						<View style={styles.row}>
-							<View style={styles.section}>
-								<Icon name="fire" size={30} color={"#ff9a00"} />
-								<Paragraph style={[styles.paragraph, styles.caption]}>80</Paragraph>
-								<Caption style={styles.caption}>days streak!</Caption>
-							</View>
+							<TouchableRipple
+								onPress={() => {
+									setOpenStreak(true);
+								}}
+							>
+								<View style={styles.section}>
+									<Icon name="fire" size={30} color={"#ff9a00"} />
+									<Paragraph style={[styles.paragraph, styles.caption]}>
+										80
+									</Paragraph>
+									<Caption style={styles.caption}>days streak!</Caption>
+								</View>
+							</TouchableRipple>
 						</View>
 					</View>
 
@@ -121,6 +132,39 @@ const DrawerContent = (props) => {
 					}}
 				/>
 			</Drawer.Section>
+			<Modal isVisible={openStreak} onBackdropPress={() => setOpenStreak(false)}>
+				<View className="flex flex-col bg-white justify-center items-center p-2 rounded-lg">
+					<Calendar
+						//   onDayPress={day => {
+						//     setSelected(day.dateString);
+						//   }}
+						// markedDates={{
+						// 	[selected]: {
+						// 		selected: true,
+						// 		disableTouchEvent: true,
+						// 		selectedDotColor: "orange",
+						// 	},
+						// }}
+						markingType={"period"}
+						markedDates={{
+							"2024-11-21": { startingDay: true, textColor: "green" },
+							"2024-11-22": { color: "green" },
+							"2024-11-23": {
+								selected: true,
+								endingDay: true,
+								color: "green",
+								textColor: "gray",
+							},
+							"2024-11-04": {
+								disabled: true,
+								startingDay: true,
+								color: "green",
+								endingDay: true,
+							},
+						}}
+					/>
+				</View>
+			</Modal>
 		</View>
 	);
 };

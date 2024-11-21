@@ -12,11 +12,11 @@ import {
 import * as NavigationBar from "expo-navigation-bar";
 import React, { useEffect, useRef, useState } from "react";
 import { Audio, ResizeMode, Video } from "expo-av";
-const soundSource = require("../../assets/sounds/count-down-ticket-1.mp3");
+const soundSource = require("../../assets/sounds/count-down-tick-5.mp3");
 const successSource = require("../../assets/sounds/success.mp3");
 import Modal from "react-native-modal";
 import { images } from "@/constants";
-import { relaxVideo, trainingVideos } from "@/assets/works";
+import { relaxVideo } from "@/assets/works";
 import CountdownTimerComponent from "./CountdownTimerComponent";
 import * as ScreenOrientation from "expo-screen-orientation";
 import Icon from "react-native-vector-icons/MaterialCommunityIcons";
@@ -121,7 +121,7 @@ const TrainingScreen = ({ navigation, route }) => {
 		if (mode === "Training") {
 			await playRandomVideo();
 			setTimeout(() => setMode("Rest"), 0);
-			setTimeout(() => setTime(15), 0);
+			setTimeout(() => setTime(25), 0);
 		} else if (mode === "Rest" || mode === "Get Ready") {
 			setTimeout(() => setCount((previous) => previous + 1), 0);
 			setTimeout(() => setMode("Training"), 0);
@@ -135,7 +135,7 @@ const TrainingScreen = ({ navigation, route }) => {
 		} else if (mode === "Long Break") {
 			setTimeout(() => setMode("Get Ready"), 0);
 			await playRandomVideo();
-			setTimeout(() => setTime(15), 0);
+			setTimeout(() => setTime(25), 0);
 		}
 	};
 
@@ -222,7 +222,7 @@ const TrainingScreen = ({ navigation, route }) => {
 		setTimeout(() => setUnit(1), 0);
 		setTimeout(() => setCount(1), 0);
 		setTimeout(() => setMode("Get Ready"), 0);
-		setTimeout(() => setTime(15), 0);
+		setTimeout(() => setTime(25), 0);
 		setTimeout(() => setShouldPlay(false), 0);
 	};
 
@@ -242,7 +242,7 @@ const TrainingScreen = ({ navigation, route }) => {
 		setCount(1);
 		setIsPaused(false);
 		setMode("Get Ready");
-		setTime(15);
+		setTime(25);
 		setOnReset(true);
 	};
 
@@ -300,6 +300,15 @@ const TrainingScreen = ({ navigation, route }) => {
 		};
 	}, []);
 
+	useEffect(() => {
+		if (toggleModal) {
+			setTimeout(() => {
+				setToggleModal(false);
+				handleBackButtonClick();
+			}, 5000);
+		}
+	}, [toggleModal]);
+
 	return (
 		<View style={styles.container}>
 			{!videoToPlay ? (
@@ -333,10 +342,10 @@ const TrainingScreen = ({ navigation, route }) => {
 					<View className="absolute flex flex-col justify-center items-center top-7 left-32">
 						<View className="flex flex-row gap-5">
 							<Text className="text-lg">
-								Exercise : <Text style={{ fontFamily: "DMBold" }}>{count - 1}</Text>
+								Exercise: <Text style={{ fontFamily: "DMBold" }}>{count - 1}</Text>
 							</Text>
 							<Text className="text-lg">
-								Unit :{" "}
+								Unit:{" "}
 								<Text style={{ fontFamily: "DMBold" }}>
 									{unit}/{maxUnits}
 								</Text>
@@ -345,11 +354,11 @@ const TrainingScreen = ({ navigation, route }) => {
 						<CountdownTimerComponent
 							durationInSeconds={time}
 							isPaused={isPaused}
-							onFinish={async (e) => {
+							onFinish={async () => {
 								await handleOnfinish();
 							}}
 							onChange={async (e) => {
-								if (e === 6) {
+								if (e === 5) {
 									await playSound();
 								}
 							}}
@@ -358,7 +367,7 @@ const TrainingScreen = ({ navigation, route }) => {
 						/>
 
 						<Text className="text-2xl font-semibold">{mode}</Text>
-						{/* <View className="flex flex-row items-center justify-center gap-1 z-10">
+						<View className="flex flex-row items-center justify-center gap-1 z-10">
 							<TouchableOpacity
 								onPress={() => handleBackButtonClick()}
 								style={styles.funcBtn}
@@ -381,12 +390,12 @@ const TrainingScreen = ({ navigation, route }) => {
 								style={styles.funcBtn}
 								onPress={() => {
 									setMode("Rest");
-									setTime(15);
+									setTime(25);
 								}}
 							>
 								<Text style={styles.text}>REST</Text>
 							</TouchableOpacity>
-						</View> */}
+						</View>
 					</View>
 					<Modal
 						isVisible={toggleModal}
