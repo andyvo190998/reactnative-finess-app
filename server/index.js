@@ -4,6 +4,7 @@ import dotenv from 'dotenv';
 import connectDB from './models/db.js';
 import userRouter from './routes/User.js';
 import trainingRouter from './routes/Training.js';
+import workLoadRouter from './routes/work-log.route.js';
 
 import cookieParser from 'cookie-parser';
 const app = express();
@@ -13,9 +14,9 @@ const port = 5000;
 //https://github.com/codedamn/full-mern-stack-video/blob/part1/server/index.js
 dotenv.config().parsed;
 const corsOptions = {
-    origin: true,
-    credentials: true,
-    optionsSuccessStatus: 200,
+	origin: true,
+	credentials: true,
+	optionsSuccessStatus: 200,
 };
 connectDB();
 
@@ -30,10 +31,11 @@ app.use(cookieParser());
 
 app.use('/api/users', userRouter);
 app.use('/api/training', trainingRouter);
+app.use('/api/work-log', workLoadRouter);
 app.get('/', (req, res) => {
-    res.send({ 'mybs': "Hello World" });
+	res.send({ 'mybs': "Hello World" });
 });
 
 app.listen(port, () => {
-    console.log(`Express is listening on port ${port}`);
+	console.log(`Express is listening on port ${port}`);
 });
